@@ -185,7 +185,7 @@ const setUpGameDiv = () => {
   gameDiv.style.height = getAttribute("boxH");
   gameDiv.style.padding = getAttribute("innerMargin");
   gameDiv.className = "grid btwn";
-  const progressDiv = document.getElementById("pr");
+  // const progressDiv = document.getElementById("pr");
   // progressDiv.style.width = getFullProgress();
   // progressDiv.style.translate = getProgressTranslate();
   // console.log(`-${getAttribute("innerMargin")} -${getAttribute("innerMargin")}`);
@@ -213,6 +213,12 @@ const setUpGameDiv = () => {
   }
 }
 
+const makeAllClickable = () => {
+  [...document.querySelectorAll("*")].forEach(el => {
+    if (!el.onclick) el.onclick = () => {};
+  })
+}
+
 const syncGameToDeck = () => {
   for (let i = 0; i < n+1; i++) {
     if (!deck[i]) {
@@ -234,4 +240,5 @@ const syncGameToDeck = () => {
 setUpGameDiv();
 makeDeck();
 setProgress(false);
+makeAllClickable();
 syncGameToDeck();
