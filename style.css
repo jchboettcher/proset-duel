@@ -1,0 +1,278 @@
+body {
+  margin: 0;
+}
+
+#bodydiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+#game {
+  background: rgb(245,245,245);
+  border: solid black;
+  /* border-radius: 15px; */
+}
+
+.grid,.row {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.grid {
+  flex-direction: column;
+}
+
+.btwn {
+  justify-content: space-between;
+}
+
+.card {
+  background-color: white;
+  box-sizing: border-box;
+  border: solid black;
+  touch-action: manipulation;
+}
+
+.dot {
+  border: solid black;
+  border-radius: 50%;
+}
+
+@keyframes rjiggle {
+  0% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(3deg);
+  }
+  23.5% {
+    transform: rotate(-1.5deg);
+  }
+  41.8% {
+    transform: rotate(0.75deg);
+  }
+  66.5% {
+    transform: rotate(-0.375deg);
+  }
+}
+
+@keyframes ljiggle {
+  0% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(-3deg);
+  }
+  23.5% {
+    transform: rotate(1.5deg);
+  }
+  41.8% {
+    transform: rotate(-0.75deg);
+  }
+  66.5% {
+    transform: rotate(0.375deg);
+  }
+}
+
+@keyframes rjiggle2 {
+  0% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(3deg);
+  }
+  23.5% {
+    transform: rotate(-1.5deg);
+  }
+  41.8% {
+    transform: rotate(0.75deg);
+  }
+  66.5% {
+    transform: rotate(-0.375deg);
+  }
+}
+
+@keyframes ljiggle2 {
+  0% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(-3deg);
+  }
+  23.5% {
+    transform: rotate(1.5deg);
+  }
+  41.8% {
+    transform: rotate(-0.75deg);
+  }
+  66.5% {
+    transform: rotate(0.375deg);
+  }
+}
+
+@keyframes rjiggle3 {
+  0% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(3deg);
+  }
+  23.5% {
+    transform: rotate(-1.5deg);
+  }
+  41.8% {
+    transform: rotate(0.75deg);
+  }
+  66.5% {
+    transform: rotate(-0.375deg);
+  }
+}
+
+@keyframes ljiggle3 {
+  0% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(-3deg);
+  }
+  23.5% {
+    transform: rotate(1.5deg);
+  }
+  41.8% {
+    transform: rotate(-0.75deg);
+  }
+  66.5% {
+    transform: rotate(0.375deg);
+  }
+}
+
+@keyframes rjiggle4 {
+  0% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(3deg);
+  }
+  23.5% {
+    transform: rotate(-1.5deg);
+  }
+  41.8% {
+    transform: rotate(0.75deg);
+  }
+  66.5% {
+    transform: rotate(-0.375deg);
+  }
+}
+
+@keyframes ljiggle4 {
+  0% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(-3deg);
+  }
+  23.5% {
+    transform: rotate(1.5deg);
+  }
+  41.8% {
+    transform: rotate(-0.75deg);
+  }
+  66.5% {
+    transform: rotate(0.375deg);
+  }
+}
+
+.card[selected] {
+  scale: 1.05;
+  border: medium solid rgb(0,199,0);
+}
+
+.card[rjiggle] {
+  animation: rjiggle 0.85s;
+}
+
+.card[ljiggle] {
+  animation: ljiggle 0.85s;
+}
+
+.card[selected][rjiggle] {
+  animation: rjiggle2 0.85s;
+}
+
+.card[selected][ljiggle] {
+  animation: ljiggle2 0.85s;
+}
+
+@keyframes redAnim {
+  from {
+    border-color: rgb(199,0,0);
+  }
+  to {
+    border-color: rgb(0,199,0);
+  }
+}
+
+@keyframes redAnim2 {
+  from {
+    border-color: rgb(199,0,0);
+  }
+  to {
+    border-color: rgb(0,199,0);
+  }
+}
+
+.card[red][rjiggle] {
+  animation: rjiggle3 0.85s, redAnim 1s;
+}
+
+.card[red][ljiggle] {
+  animation: ljiggle3 0.85s, redAnim 1s;
+}
+
+.card[red][toggler][rjiggle] {
+  animation: rjiggle4 0.85s, redAnim2 1s;
+}
+
+.card[red][toggler][ljiggle] {
+  animation: ljiggle4 0.85s, redAnim2 1s;
+}
+
+@keyframes redeal {
+  0% {
+    scale: 1;
+  }
+  40% {
+    scale: 0;
+  }
+  60% {
+    scale: 0;
+  }
+  100% {
+    scale: 1;
+  }
+}
+
+.card[gone] {
+  /* animation: redeal 1s ease-in-out; */
+  animation: redeal 0.8s;
+}
+
+#progress-bar {
+  /* border: solid rgb(245,245,245); */
+  border: solid rgb(0,199,0);
+  /* border-bottom: none; */
+  transition: width 1s, margin 1s;
+  /* margin: 0 0 0 auto; */
+}
+
+#progressdiv {
+  background-color: rgb(0,199,0);
+  border: solid black;
+  border-bottom: none;
+  /* border-left: solid rgb(0,199,0);
+  translate: -min(min(11.428571428571429vw,12.121212121212123vh),60.06px) -min(min(11.428571428571429vw,12.121212121212123vh),60.06px); */
+}
