@@ -91,7 +91,7 @@ const {numCardCols,numCardRows,numDotCols,numDotRows,dims} = getDimensions(windo
 
 const getAttribute = key => {
   const {vw,hScale,fixed} = dims;
-  const marginString = `min(${vw[key]}vw,${vw[key]*hScale}vh)`;
+  const marginString = `min(${vw[key]}dvw,${vw[key]*hScale}dvh)`;
   if (device != "DESKTOP") return marginString;
   return `min(${marginString},${fixed[key]}px)`;
 }
