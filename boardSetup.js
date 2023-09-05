@@ -13,6 +13,7 @@ const colors = [
 ]
 
 const device = window.getUserDevice();
+document.querySelector(':root').style.setProperty("--device",device=="DESKTOP" ? "medium" : "thick");
 // const scrunchRatios = [1,1,0.795,0.826,0.9,0.872];
 const desktopScale = 1;
 // const desktopScale = device=="DESKTOP" ? (scrunch ? 0.85 : 0.75) : 1;
@@ -101,14 +102,16 @@ const getFullProgress = () => {
   const padW = getAttribute("innerMargin");
   return `calc(calc(${baseW} + ${padW}) + ${padW})`;
 }
-const setProgress = () => {
+const setProgress = (smooth=true) => {
   const full = getFullProgress();
   // return "100%"
   // return `calc(${getFullProgress()} * 1)`;
   const bar = document.getElementById("progress-bar");
+  if (smooth) bar.style.transition = "width 0.8s, margin 0.8s";
   const progress = deck.filter(e=>e!=undefined).length/(2**n-1);
   bar.style.width = `calc(${full} * ${1-progress})`;
   bar.style.marginRight = `calc(${full} * ${progress})`;
+  setTimeout(() => bar.style.transition = "none", 800);
 }
 
 const clickCard = id => {
@@ -140,7 +143,11 @@ const createCard = (id,numCols,numRows) => {
   // card.style.background = "white";
   card.style.borderRadius = getAttribute("cardRad");
   // card.style.borderWidth = getAttribute("borderWidth");
-  card.onclick = () => clickCard(id);
+  if (device == "DESKTOP") {
+    card.onclick = () => clickCard(id);
+  } else {
+    card.ontouchstart = () => clickCard(id);
+  }
   let dotCount = 0;
   for (let i = 0; i < numRows; i++) {
     const row = document.createElement("div");
@@ -178,7 +185,7 @@ const setUpGameDiv = () => {
   gameDiv.style.height = getAttribute("boxH");
   gameDiv.style.padding = getAttribute("innerMargin");
   gameDiv.className = "grid btwn";
-  // const progressDiv = document.getElementById("progressdiv");
+  const progressDiv = document.getElementById("pr");
   // progressDiv.style.width = getFullProgress();
   // progressDiv.style.translate = getProgressTranslate();
   // console.log(`-${getAttribute("innerMargin")} -${getAttribute("innerMargin")}`);
@@ -226,5 +233,5 @@ const syncGameToDeck = () => {
 
 setUpGameDiv();
 makeDeck();
-setProgress();
+setProgress(false);
 syncGameToDeck();
