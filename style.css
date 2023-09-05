@@ -208,7 +208,7 @@ body,div {
 
 .card[selected] {
   scale: 1.05;
-  border: var(--device) solid rgb(0,199,0);
+  border: solid rgb(0,199,0);
 }
 
 .card[rjiggle] {

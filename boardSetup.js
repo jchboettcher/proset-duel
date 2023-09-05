@@ -13,7 +13,7 @@ const colors = [
 ]
 
 const device = window.getUserDevice();
-document.querySelector(':root').style.setProperty("--device",device=="DESKTOP" ? "medium" : "thick");
+// document.querySelector(':root').style.setProperty("--device",device=="DESKTOP" ? "medium" : "thick");
 // const scrunchRatios = [1,1,0.795,0.826,0.9,0.872];
 const desktopScale = 1;
 // const desktopScale = device=="DESKTOP" ? (scrunch ? 0.85 : 0.75) : 1;
@@ -25,6 +25,8 @@ const cornerRatio = 0.07;
 const dotScale = 1.25;
 const outerMargin = 10;
 const fixedCardW = 11;
+const borderW = 0.35;
+const selectW = 0.7;
 
 const getDimensionsFixed = (vw,numCardCols,numCardRows,numDotCols,numDotRows) => {
   const cardW = fixedCardW/100*vw;
@@ -33,6 +35,7 @@ const getDimensionsFixed = (vw,numCardCols,numCardRows,numDotCols,numDotRows) =>
   const innerBtwn = baseUnit*innerBtwnUnits;
   const cardRad = cardW*cornerRatio;
   const boxW = 2*innerMargin+(numCardCols-1)*innerBtwn+numCardCols*cardW;
+  const totalW = boxW+2*outerMargin;
   const dotW = cardW*dotScale/(numDotCols*2+1);
   const dotBtwn = (cardW-dotW*numDotCols)/(numDotCols+1);
   const cardH = dotW*numDotRows+dotBtwn*(numDotRows+1);
@@ -44,6 +47,8 @@ const getDimensionsFixed = (vw,numCardCols,numCardRows,numDotCols,numDotRows) =>
     boxW: boxH-innerMargin*2,
     innerMargin, innerBtwn, cardW: cardH, cardH: cardW, cardRad, dotW, dotBtwn,
     extraPadding: (cardH+innerBtwn)/2,
+    borderW: borderW/100*totalW,
+    selectW: selectW/100*totalW,
   }
 }
 
@@ -78,7 +83,7 @@ const getDimensions = (vw) => {
         fullBoxW: boxW,
         boxW: boxW-innerMargin*2,
         boxH: boxH-innerMargin*2,
-        innerMargin, innerBtwn, cardW, cardH, cardRad, dotW, dotBtwn,
+        innerMargin, innerBtwn, cardW, cardH, cardRad, dotW, dotBtwn, borderW, selectW,
         extraPadding: (cardW+innerBtwn)/2,
       },
       hScale,
@@ -117,9 +122,12 @@ const setProgress = (smooth=true) => {
 const clickCard = id => {
   const card = document.getElementById(id);
   card.toggleAttribute("gone", false);
-  if (!card.toggleAttribute("selected")) {
+  if (card.toggleAttribute("selected")) {
+    card.style.borderWidth = getAttribute("selectW");
+  } else {
     card.toggleAttribute("red", false);
     card.toggleAttribute("toggler", false);
+    card.style.borderWidth = getAttribute("borderW");
   }
   jiggleCard(card);
 }
@@ -137,6 +145,7 @@ const createCard = (id,numCols,numRows) => {
   card.className = "card grid";
   card.style.width = getAttribute("cardW");
   card.style.height = getAttribute("cardH");
+  card.style.borderWidth = getAttribute("borderW");
   // card.style.display = "flex";
   // card.style.flexDirection = "column";
   // card.style.justifyContent = "space-evenly";
@@ -157,6 +166,7 @@ const createCard = (id,numCols,numRows) => {
       dot.style.width = getAttribute("dotW");
       dot.style.height = getAttribute("dotW");
       dot.style.visibility = "hidden";
+      dot.style.borderWidth = getAttribute("borderW");
       dot.className = "dot";
       if (!(n==7 && i==1 && j==2) && dotCount < n) {
         dot.style.background = colors[dotCount];
@@ -184,8 +194,10 @@ const setUpGameDiv = () => {
   gameDiv.style.width = getAttribute("boxW");
   gameDiv.style.height = getAttribute("boxH");
   gameDiv.style.padding = getAttribute("innerMargin");
+  gameDiv.style.borderWidth = getAttribute("borderW");
   gameDiv.className = "grid btwn";
-  // const progressDiv = document.getElementById("pr");
+  const bar = document.getElementById("progress-bar");
+  bar.style.borderWidth = getAttribute("borderW");
   // progressDiv.style.width = getFullProgress();
   // progressDiv.style.translate = getProgressTranslate();
   // console.log(`-${getAttribute("innerMargin")} -${getAttribute("innerMargin")}`);
@@ -215,7 +227,7 @@ const setUpGameDiv = () => {
 
 const makeAllClickable = () => {
   [...document.querySelectorAll("*")].forEach(el => {
-    if (!el.onclick) el.onclick = () => {};
+    if (!el.onclick) el.onclick = e => {e.preventDefault()};
   })
 }
 
@@ -240,5 +252,5 @@ const syncGameToDeck = () => {
 setUpGameDiv();
 makeDeck();
 setProgress(false);
-makeAllClickable();
+if (device != "DESKTOP") makeAllClickable();
 syncGameToDeck();
