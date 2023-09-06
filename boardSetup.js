@@ -16,14 +16,14 @@ const colors = [
 
 const device = window.getUserDevice();
 
-const outerMargin = device=="DESKTOP" ? 100 : 30;   // px
-const innerMarginUnits = 5/6;                       // wrt cardH
-const innerBtwnUnits = 1/6;                         // wrt cardH
-const cornerRatio = 0.07;                           // wrt cardH
-const dotScale = 1.35;                              // wrt dividing card evenly (btwn==dot)
-const fixedCardW = 10;                              // vw
-const borderW = device=="DESKTOP" ? 1.666 : 2.25;   // % of cardH
-const selectW = device=="DESKTOP" ? 2.85 : 3.849;   // % of cardH
+const outerMargin = device=="DESKTOP" ? 100 : 30;         // px
+const innerMarginUnits = device=="DESKTOP" ? 5/6 : 3/6;   // wrt cardH
+const innerBtwnUnits = 1/6;                               // wrt cardH
+const cornerRatio = 0.07;                                 // wrt cardH
+const dotScale = 1.35;                                    // wrt dividing card evenly (btwn==dot)
+const fixedCardW = 10;                                    // vw
+const borderW = device=="DESKTOP" ? 1.666 : 2.25;         // % of cardH
+const selectW = device=="DESKTOP" ? 2.85 : 3.849;         // % of cardH
 
 const getDimensions = vw => {
   const numCardCols = [[3,3],[3,3],[3,4],[3,4],[3,5],[4,5]][n-4][scrunch?0:1];
@@ -74,9 +74,16 @@ const copyScore = () => {
   aux.innerHTML = s
   document.body.appendChild(aux);
   aux.select();
-  document.execCommand("copy");
-  document.body.removeChild(aux);
-  alert("Copied results to clipboard!")
+  aux.setSelectionRange(0,99999);
+  navigator.clipboard
+    .writeText(aux.value)
+    .then(() => {
+      alert("Copied results to clipboard!");
+      document.body.removeChild(aux);
+    })
+    .catch(() => {
+      alert("Sorry, unable to copy results.");
+    });
 }
 
 const stopGame = () => {
@@ -218,11 +225,11 @@ const setUpGameDiv = () => {
   }
 }
 
-// const makeAllClickable = () => {
-//   [...document.querySelectorAll("*")].forEach(el => {
-//     if (!el.onclick) el.onclick = e => {e.preventDefault()};
-//   })
-// }
+const disableDoubleClicks = () => {
+  [...document.querySelectorAll("*")].forEach(el => {
+    el.ondblclick = e => {e.preventDefault()};
+  })
+}
 
 const showCards = () => {
   for (let i = 0; i < n+1; i++) {
@@ -263,4 +270,4 @@ const startGame = () => {
 setUpGameDiv();
 resizeWindow();
 makeDeck();
-// if (device != "DESKTOP") makeAllClickable();
+disableDoubleClicks();
