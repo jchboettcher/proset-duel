@@ -1,6 +1,6 @@
 let startTime;
 let stopTimeId;
-let scrunch = !rand;
+let scrunch = rand;
 
 const colors = [
   "rgb(255,0,0)",
@@ -17,13 +17,13 @@ const colors = [
 const device = window.getUserDevice();
 
 const outerMargin = device=="DESKTOP" ? 100 : 30;   // px
-const innerMarginUnits = 5/6;   // wrt cardH
-const innerBtwnUnits = 1/6;     // wrt cardH
-const cornerRatio = 0.07;       // wrt cardH
-const dotScale = 1.35;          // wrt dividing card evenly (btwn==dot)
-const fixedCardW = 10;          // vw
-const borderW = 1.666;          // % of cardH
-const selectW = 2.85;           // % of cardH
+const innerMarginUnits = 5/6;                       // wrt cardH
+const innerBtwnUnits = 1/6;                         // wrt cardH
+const cornerRatio = 0.07;                           // wrt cardH
+const dotScale = 1.35;                              // wrt dividing card evenly (btwn==dot)
+const fixedCardW = 10;                              // vw
+const borderW = device=="DESKTOP" ? 1.666 : 2.25;   // % of cardH
+const selectW = device=="DESKTOP" ? 2.85 : 3.849;   // % of cardH
 
 const getDimensions = vw => {
   const numCardCols = [[3,3],[3,3],[3,4],[3,4],[3,5],[4,5]][n-4][scrunch?0:1];
