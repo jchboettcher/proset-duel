@@ -35,7 +35,7 @@ const submitSet = () => {
     }
     disappearSet();
     setProgress();
-    setTimeout(syncGameToDeck,400);
+    setTimeout(syncGameToDeck,350);
     resetAttributes();
   }
 }

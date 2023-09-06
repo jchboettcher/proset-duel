@@ -1,3 +1,5 @@
+let startTime;
+let stopTimeId;
 let scrunch = !rand;
 
 const colors = [
@@ -14,7 +16,7 @@ const colors = [
 
 const device = window.getUserDevice();
 
-const outerMargin = device=="DESKTOP" ? 100 : 50;   // px
+const outerMargin = device=="DESKTOP" ? 100 : 30;   // px
 const innerMarginUnits = 5/6;   // wrt cardH
 const innerBtwnUnits = 1/6;     // wrt cardH
 const cornerRatio = 0.07;       // wrt cardH
@@ -24,7 +26,7 @@ const borderW = 1.666;          // % of cardH
 const selectW = 2.85;           // % of cardH
 
 const getDimensions = vw => {
-  const numCardCols = [[],[],[],[],[3,3],[3,3],[3,4],[3,4],[3,5],[4,5]][n][scrunch?0:1];
+  const numCardCols = [[3,3],[3,3],[3,4],[3,4],[3,5],[4,5]][n-4][scrunch?0:1];
   const numDotCols = n>6 ? 3 : 2;
   const numCardRows = (scrunch && n > 5) ? 3 : 2;
   const numDotRows = n>4 ? 3 : 2;
@@ -63,11 +65,42 @@ const resizeWindow = () => {
 
 window.onresize = resizeWindow;
 
+const updateTimer = () => document.getElementById("timer").innerText=(new Date()).getTime()-startTime;
+
+const copyScore = () => {
+  const aux = document.createElement("textarea");
+  let s = `${rand ? "Random" : "Daily"} Proset ${n}-dot: ${document.getElementById("timer").innerText/1000}s\n`;
+  s += `jchboettcher.github.io/proset-duel/?${rand ? "random" : "daily"}/${n}${rand ? "/"+day : ""}`
+  aux.innerHTML = s
+  document.body.appendChild(aux);
+  aux.select();
+  document.execCommand("copy");
+  document.body.removeChild(aux);
+  alert("Copied results to clipboard!")
+}
+
+const stopGame = () => {
+  clearInterval(stopTimeId);
+  updateTimer();
+  document.getElementById("start-text").innerText = "SHARE";
+  const share = document.getElementById("start");
+  if (device == "DESKTOP") {
+    share.onclick = copyScore;
+  } else {
+    share.ontouchstart = copyScore;
+  }
+  setTimeout(() => {
+    share.style.visibility = "visible";
+    share.toggleAttribute("appear",true);
+  }, 400);
+}
+
 const setProgress = () => {
   const full = dims.boxW+"px";
   const bar = document.getElementById("progress-bar");
   bar.style.transition = "width 0.8s, marginRight 0.8s";
   const progress = deck.filter(e=>e!=undefined).length/(2**n-1);
+  if (progress == 0) stopGame();
   bar.style.width = `calc(${full} * ${1-progress})`;
   bar.style.marginRight = `calc(${full} * ${progress})`;
   setTimeout(() => bar.style.transition = "none", 800);
@@ -185,11 +218,11 @@ const setUpGameDiv = () => {
   }
 }
 
-const makeAllClickable = () => {
-  [...document.querySelectorAll("*")].forEach(el => {
-    if (!el.onclick) el.onclick = e => {e.preventDefault()};
-  })
-}
+// const makeAllClickable = () => {
+//   [...document.querySelectorAll("*")].forEach(el => {
+//     if (!el.onclick) el.onclick = e => {e.preventDefault()};
+//   })
+// }
 
 const showCards = () => {
   for (let i = 0; i < n+1; i++) {
@@ -198,6 +231,8 @@ const showCards = () => {
     card.style.visibility = "visible";
     setTimeout(() => card.toggleAttribute("appear",false),400);
   }
+  startTime = (new Date()).getTime();
+  stopTimeId = setInterval(updateTimer,13);
 }
 
 const syncGameToDeck = () => {
@@ -220,12 +255,12 @@ const syncGameToDeck = () => {
 
 const startGame = () => {
   document.getElementById("start").style.visibility = "hidden";
+  setProgress();
   showCards();
   syncGameToDeck();
-  setProgress();
 }
 
 setUpGameDiv();
 resizeWindow();
 makeDeck();
-if (device != "DESKTOP") makeAllClickable();
+// if (device != "DESKTOP") makeAllClickable();
