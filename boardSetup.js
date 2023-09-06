@@ -13,106 +13,60 @@ const colors = [
 ]
 
 const device = window.getUserDevice();
-// document.querySelector(':root').style.setProperty("--device",device=="DESKTOP" ? "medium" : "thick");
-// const scrunchRatios = [1,1,0.795,0.826,0.9,0.872];
-const desktopScale = 1;
-// const desktopScale = device=="DESKTOP" ? (scrunch ? 0.85 : 0.75) : 1;
 
-const cardUnits = 6;
-const innerMarginUnits = 4;
-const innerBtwnUnits = 1;
-const cornerRatio = 0.07;
-const dotScale = 1.25;
-const outerMargin = 10;
-const fixedCardW = 11;
-const borderW = 0.35;
-const selectW = 0.7;
+const outerMargin = device=="DESKTOP" ? 100 : 50;   // px
+const innerMarginUnits = 5/6;   // wrt cardH
+const innerBtwnUnits = 1/6;     // wrt cardH
+const cornerRatio = 0.07;       // wrt cardH
+const dotScale = 1.35;          // wrt dividing card evenly (btwn==dot)
+const fixedCardW = 10;          // vw
+const borderW = 1.666;          // % of cardH
+const selectW = 2.85;           // % of cardH
 
-const getDimensionsFixed = (vw,numCardCols,numCardRows,numDotCols,numDotRows) => {
-  const cardW = fixedCardW/100*vw;
-  const baseUnit = cardW/cardUnits;
-  const innerMargin = baseUnit*innerMarginUnits;
-  const innerBtwn = baseUnit*innerBtwnUnits;
-  const cardRad = cardW*cornerRatio;
-  const boxW = 2*innerMargin+(numCardCols-1)*innerBtwn+numCardCols*cardW;
-  const totalW = boxW+2*outerMargin;
-  const dotW = cardW*dotScale/(numDotCols*2+1);
-  const dotBtwn = (cardW-dotW*numDotCols)/(numDotCols+1);
-  const cardH = dotW*numDotRows+dotBtwn*(numDotRows+1);
-  const boxH = cardH*numCardRows+(numCardRows-1)*innerBtwn+2*innerMargin;
-
-  return {
-    fullBoxW: boxW,
-    boxH: boxW-innerMargin*2,
-    boxW: boxH-innerMargin*2,
-    innerMargin, innerBtwn, cardW: cardH, cardH: cardW, cardRad, dotW, dotBtwn,
-    extraPadding: (cardH+innerBtwn)/2,
-    borderW: borderW/100*totalW,
-    selectW: selectW/100*totalW,
-  }
-}
-
-const getDimensions = (vw) => {
-  // layout stuff
+const getDimensions = vw => {
   const numCardCols = [[],[],[],[],[3,3],[3,3],[3,4],[3,4],[3,5],[4,5]][n][scrunch?0:1];
   const numDotCols = n>6 ? 3 : 2;
   const numCardRows = (scrunch && n > 5) ? 3 : 2;
   const numDotRows = n>4 ? 3 : 2;
+  const cardH = fixedCardW/100*vw;
+  // const baseUnit = cardH/cardUnits;
+  const innerMargin = cardH*innerMarginUnits;
+  const innerBtwn = cardH*innerBtwnUnits;
+  const cardRad = cardH*cornerRatio;
+  const boxH = 2*innerMargin+(numCardRows-1)*innerBtwn+numCardRows*cardH;
+  const dotW = cardH*dotScale/(numDotRows*2+1);
+  const dotBtwn = (cardH-dotW*numDotRows)/(numDotRows+1);
+  const cardW = dotW*numDotCols+dotBtwn*(numDotCols+1);
+  const boxW = cardW*numCardCols+(numCardCols-1)*innerBtwn+2*innerMargin;
 
-  // with respect to total width:
-  const totalW = 100;
-  const boxW = totalW-2*outerMargin;
-  const baseUnit = boxW/(innerMarginUnits*2+(numCardCols-1)*innerBtwnUnits+numCardCols*cardUnits);
-  const innerMargin = baseUnit*innerMarginUnits;
-  const innerBtwn = baseUnit*innerBtwnUnits;
-  const cardW = baseUnit*cardUnits;
-  const cardRad = cardW*cornerRatio;
-  const dotW = cardW*dotScale/(numDotCols*2+1);
-  const dotBtwn = (cardW-dotW*numDotCols)/(numDotCols+1);
-  const cardH = dotW*numDotRows+dotBtwn*(numDotRows+1);
-  const boxH = cardH*numCardRows+(numCardRows-1)*innerBtwn+2*innerMargin;
-  const totalH = boxH+2*outerMargin;
-  const hScale = totalW/totalH;
   return {
-    numCardCols,
-    numCardRows,
-    numDotCols,
-    numDotRows,
+    numCardCols,numCardRows,numDotCols,numDotRows,
     dims: {
-      vw: {
-        fullBoxW: boxW,
-        boxW: boxW-innerMargin*2,
-        boxH: boxH-innerMargin*2,
-        innerMargin, innerBtwn, cardW, cardH, cardRad, dotW, dotBtwn, borderW, selectW,
-        extraPadding: (cardW+innerBtwn)/2,
-      },
-      hScale,
-      fixed: getDimensionsFixed(vw,numCardRows,numCardCols,numDotRows,numDotCols),
-    },
+      boxW, boxH, innerMargin, innerBtwn, cardW, cardH, cardRad, dotW, dotBtwn,
+      extraPadding: (cardH+innerBtwn)/2,
+      borderW: borderW*cardH/100,
+      selectW: selectW*cardH/100,
+    }
   }
 }
 
 const {numCardCols,numCardRows,numDotCols,numDotRows,dims} = getDimensions(window.innerWidth);
 
-const getAttribute = key => {
-  const {vw,hScale,fixed} = dims;
-  const marginString = `min(${vw[key]}dvw,${vw[key]*hScale}dvh)`;
-  if (device != "DESKTOP") return marginString;
-  return `min(${marginString},${fixed[key]}px)`;
+const resizeWindow = () => {
+  const mobileScale = Math.min(
+    window.innerWidth/(dims.boxW+2*outerMargin),
+    window.innerHeight/(dims.boxH+2*outerMargin));
+  const desktopScale = Math.min(1,mobileScale);
+  const bodyDiv = document.getElementById("bodydiv");
+  bodyDiv.style.scale = device=="DESKTOP" ? desktopScale : mobileScale;
 }
-// const getAttribute = ({vw,vh},key) => `${vw[key]}vw`;
 
-const getFullProgress = () => {
-  const baseW = getAttribute("boxW");
-  const padW = getAttribute("innerMargin");
-  return `calc(calc(${baseW} + ${padW}) + ${padW})`;
-}
-const setProgress = (smooth=true) => {
-  const full = getFullProgress();
-  // return "100%"
-  // return `calc(${getFullProgress()} * 1)`;
+window.onresize = resizeWindow;
+
+const setProgress = () => {
+  const full = dims.boxW+"px";
   const bar = document.getElementById("progress-bar");
-  if (smooth) bar.style.transition = "width 0.8s, margin 0.8s";
+  bar.style.transition = "width 0.8s, marginRight 0.8s";
   const progress = deck.filter(e=>e!=undefined).length/(2**n-1);
   bar.style.width = `calc(${full} * ${1-progress})`;
   bar.style.marginRight = `calc(${full} * ${progress})`;
@@ -123,11 +77,11 @@ const clickCard = id => {
   const card = document.getElementById(id);
   card.toggleAttribute("gone", false);
   if (card.toggleAttribute("selected")) {
-    card.style.borderWidth = getAttribute("selectW");
+    card.style.borderWidth = dims.selectW+"px";
   } else {
     card.toggleAttribute("red", false);
     card.toggleAttribute("toggler", false);
-    card.style.borderWidth = getAttribute("borderW");
+    card.style.borderWidth = dims.borderW+"px";
   }
   jiggleCard(card);
 }
@@ -143,15 +97,8 @@ const createCard = (id,numCols,numRows) => {
   const card = document.createElement("div");
   card.id = id;
   card.className = "card grid";
-  card.style.width = getAttribute("cardW");
-  card.style.height = getAttribute("cardH");
-  card.style.borderWidth = getAttribute("borderW");
-  // card.style.display = "flex";
-  // card.style.flexDirection = "column";
-  // card.style.justifyContent = "space-evenly";
-  // card.style.background = "white";
-  card.style.borderRadius = getAttribute("cardRad");
-  // card.style.borderWidth = getAttribute("borderWidth");
+  card.style.borderWidth = dims.borderW+"px";
+  card.style.borderRadius = dims.cardRad+"px";
   if (device == "DESKTOP") {
     card.onclick = () => clickCard(id);
   } else {
@@ -161,12 +108,14 @@ const createCard = (id,numCols,numRows) => {
   for (let i = 0; i < numRows; i++) {
     const row = document.createElement("div");
     row.className = "row";
+    const y = (-(numRows-1)/2+i)*(dims.dotW+dims.dotBtwn);
+    placeElement(row,dims.dotW*numCols+dims.dotBtwn,dims.dotW,0,y);
     for (let j = 0; j < numCols; j++) {
       const dot = document.createElement("div");
-      dot.style.width = getAttribute("dotW");
-      dot.style.height = getAttribute("dotW");
+      const x = (-(numCols-1)/2+j)*(dims.dotW+dims.dotBtwn);
+      placeElement(dot,dims.dotW,dims.dotW,x,0);
       dot.style.visibility = "hidden";
-      dot.style.borderWidth = getAttribute("borderW");
+      dot.style.borderWidth = dims.borderW+"px";
       dot.className = "dot";
       if (!(n==7 && i==1 && j==2) && dotCount < n) {
         dot.style.background = colors[dotCount];
@@ -179,49 +128,60 @@ const createCard = (id,numCols,numRows) => {
   return card;
 }
 
-// const addSpacer = (el,dir) => {
-//   const spacer = document.createElement("div");
-//   spacer.style[dir] = getAttribute("innerMargin");
-//   el.appendChild(spacer);
-// }
+const placeElement = (el,w,h,x=0,y=0) => {
+  el.style.width = w+"px";
+  el.style.height = h+"px";
+  el.style.marginLeft = -w/2+"px";
+  el.style.marginTop = -h/2+"px";
+  el.style.left = `calc(50% + ${x}px)`;
+  el.style.top = `calc(50% + ${y}px)`;
+}
 
 const setUpGameDiv = () => {
   const gameDiv = document.getElementById("game");
-  // console.log(2*dims.vw.innerMargin+numCardCols*dims.vw.cardW+(numCardCols-1)*dims.vw.innerBtwn,dims.vw.boxW)
-  // console.log(2*dims.vw.innerMargin+numCardRows*dims.vw.cardW+(numCardRows-1)*dims.vw.innerBtwn,dims.vw.boxH)
-  // console.log(2*dims.vh.innerMargin+numCardCols*dims.vh.cardW+(numCardCols-1)*dims.vh.innerBtwn,dims.vh.boxW)
-  // console.log(2*dims.vh.innerMargin+numCardRows*dims.vh.cardW+(numCardRows-1)*dims.vh.innerBtwn,dims.vh.boxH)
-  gameDiv.style.width = getAttribute("boxW");
-  gameDiv.style.height = getAttribute("boxH");
-  gameDiv.style.padding = getAttribute("innerMargin");
-  gameDiv.style.borderWidth = getAttribute("borderW");
+  placeElement(gameDiv,dims.boxW,dims.boxH);
+  gameDiv.style.borderWidth = dims.borderW+"px";
   gameDiv.className = "grid btwn";
   const bar = document.getElementById("progress-bar");
-  bar.style.borderWidth = getAttribute("borderW");
-  // progressDiv.style.width = getFullProgress();
-  // progressDiv.style.translate = getProgressTranslate();
-  // console.log(`-${getAttribute("innerMargin")} -${getAttribute("innerMargin")}`);
-  // progressBar.style.height = 0;
-  const rowLens = [[],[],[],[],
+  placeElement(bar,dims.boxW,0,0,-dims.boxH/2-dims.borderW*1.5);
+  bar.style.borderWidth = dims.borderW+"px";
+  const rowLens = [
     [[3,2],  [3,2]],
     [[3,3],  [3,3]],
     [[2,3,2],[4,3]],
     [[3,3,2],[4,4]],
     [[3,3,3],[5,4]],
     [[3,4,3],[5,5]]
-  ][n][scrunch?0:1];
+  ][n-4][scrunch?0:1];
   let cardCount = 0;
+  // const ys = [[[-0.5,-0.5],[0.5,0.5]],[[-1,-1]]][numCardRows-2];
   for (let i = 0; i < numCardRows; i++) {
     const row = document.createElement("div");
-    row.className = "row btwn";
-    if (rowLens[i] < numCardCols) {
-      row.style.paddingLeft = getAttribute("extraPadding");
-      row.style.paddingRight = getAttribute("extraPadding");
-    }
+    row.className = "row";
+    const y = (-(numCardRows-1)/2+i)*(dims.cardH+dims.innerBtwn);
+    placeElement(row,dims.boxW-2*dims.innerMargin,dims.cardH,0,y)
     for (let j = 0; j < rowLens[i]; j++) {
-      row.appendChild(createCard("card"+(cardCount++),numDotCols,numDotRows));
+      const card = createCard("card"+(cardCount++),numDotCols,numDotRows);
+      card.style.visibility = "hidden";
+      const x = (-(rowLens[i]-1)/2+j)*(dims.cardW+dims.innerBtwn);
+      placeElement(card,dims.cardW,dims.cardH,x,0);
+      row.appendChild(card);
     }
     gameDiv.appendChild(row);
+  }
+  const startDiv = document.getElementById("start");
+  placeElement(startDiv,dims.cardH*2,dims.cardH);
+  startDiv.style.borderWidth = dims.selectW+"px";
+  startDiv.style.borderRadius = dims.cardRad+"px";
+  startDiv.style.fontSize = dims.cardH/5+"px";
+  const startText = document.getElementById("start-text")
+  startText.innerText = "START";
+  startText.style.height = dims.cardH+"px";
+  gameDiv.appendChild(startDiv);
+  if (device == "DESKTOP") {
+    startDiv.onclick = startGame;
+  } else {
+    startDiv.ontouchstart = startGame;
   }
 }
 
@@ -229,6 +189,15 @@ const makeAllClickable = () => {
   [...document.querySelectorAll("*")].forEach(el => {
     if (!el.onclick) el.onclick = e => {e.preventDefault()};
   })
+}
+
+const showCards = () => {
+  for (let i = 0; i < n+1; i++) {
+    const card = document.getElementById("card"+i);
+    card.toggleAttribute("appear",true);
+    card.style.visibility = "visible";
+    setTimeout(() => card.toggleAttribute("appear",false),400);
+  }
 }
 
 const syncGameToDeck = () => {
@@ -249,8 +218,14 @@ const syncGameToDeck = () => {
   }
 }
 
+const startGame = () => {
+  document.getElementById("start").style.visibility = "hidden";
+  showCards();
+  syncGameToDeck();
+  setProgress();
+}
+
 setUpGameDiv();
+resizeWindow();
 makeDeck();
-setProgress(false);
 if (device != "DESKTOP") makeAllClickable();
-syncGameToDeck();

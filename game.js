@@ -1,8 +1,8 @@
-const discardSet = () => {
+const disappearSet = () => {
   [...document.querySelectorAll("[selected]")].forEach(el=>{
     el.toggleAttribute("gone",true);
     el.toggleAttribute("selected",false);
-    el.style.borderWidth = getAttribute("borderW");
+    el.style.borderWidth = dims.borderW+"px";
   });
 }
 
@@ -13,7 +13,7 @@ const resetAttributes = () => {
     el.toggleAttribute("rjiggle",false);
     el.toggleAttribute("ljiggle",false);
     el.toggleAttribute("toggler",false);
-    el.style.borderWidth = getAttribute("borderW");
+    el.style.borderWidth = dims.borderW+"px";
   });
 }
 
@@ -33,7 +33,7 @@ const submitSet = () => {
     for (let i = 0; i <= n; i++) {
       if (s[i] == "1") deck[i] = deck.splice(j,1)[0];
     }
-    discardSet();
+    disappearSet();
     setProgress();
     setTimeout(syncGameToDeck,400);
     resetAttributes();
@@ -55,7 +55,7 @@ const bodyDivClick = e => {
     el.toggleAttribute("selected",false);
     el.toggleAttribute("red", false);
     el.toggleAttribute("toggler", false);
-    el.style.borderWidth = getAttribute("borderW");
+    el.style.borderWidth = dims.borderW+"px";
   });
 }
 
