@@ -53,6 +53,8 @@ const getDimensions = vw => {
 const {numCardCols,numCardRows,numDotCols,numDotRows,dims} = getDimensions(window.innerWidth);
 
 const resizeWindow = () => {
+  document.body.style.width = document.innerWidth+"px";
+  document.body.style.height = document.innerHeight+"px";
   const mobileScale = Math.min(
     window.innerWidth/(dims.boxW+2*outerMargin),
     window.innerHeight/(dims.boxH+2*outerMargin));
@@ -182,6 +184,8 @@ const placeElement = (el,w,h,x=0,y=0) => {
 }
 
 const setUpGameDiv = () => {
+  document.body.style.width = document.innerWidth+"px";
+  document.body.style.height = document.innerHeight+"px";
   const bodyDiv = document.getElementById("bodydiv");
   placeElement(bodyDiv,dims.boxW+2*outerMargin,dims.boxH+2*outerMargin);
   const gameDiv = document.getElementById("game");

@@ -3,8 +3,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   font-style: bold;
   position: relative;
-  width: 100dvw;
-  height: 100dvh;
+  /* width: 100dvw;
+  height: 100dvh; */
+  /* width: 100vw;
+  height: 100vh; */
 }
 
 #timer {
@@ -23,6 +25,7 @@ body {
             user-select: none;
   -ms-touch-action: manipulation;
   touch-action: manipulation;
+  -webkit-font-smoothing: subpixel-antialiased;
 }
 
 #bodydiv {
