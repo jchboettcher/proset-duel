@@ -26,6 +26,7 @@ body {
   -ms-touch-action: manipulation;
   touch-action: manipulation;
   -webkit-font-smoothing: subpixel-antialiased;
+  transform: translateZ(0);
 }
 
 #bodydiv {
