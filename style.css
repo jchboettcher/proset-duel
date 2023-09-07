@@ -53,18 +53,18 @@ body {
   height: 100dvh; */
 }
 
-#game,#progress-bar,#start,.row,.card,.dot {
+#game,#progress-bar,#start,.row,.card,.dot,#share {
   box-sizing: border-box;
   position: absolute;
 }
 
-#game,#start {
+#game,#start,#share {
   background: rgb(245,245,245);
   border: solid black;
   /* border-radius: 15px; */
 }
 
-#start {
+#start,#share {
   text-align: center;
 }
 
@@ -312,7 +312,7 @@ body {
   animation: redeal 0.7s;
 }
 
-.card[appear],#start[appear] {
+.card[appear],#start[appear],#share[appear] {
   animation: deal 0.4s;
 }
 

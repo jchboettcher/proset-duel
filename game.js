@@ -25,18 +25,21 @@ const submitSet = () => {
   const s = [...Array(n+1).keys()].map(i=>selectedIds.includes(i)?1:0).join("");
   const correctSet = getSets(deck.slice(0,n+1)).includes(s);
   if (!correctSet) {
+    if (s.includes("1")) wrongSubmits++;
     selected.forEach(el=>{
       el.toggleAttribute("toggler");
       el.toggleAttribute("red",true);
       jiggleCard(el);
     });
   } else {
+    heatTimes.push((new Date()).getTime()-startTime);
+    setSizes.push(s.split("1").length-1);
     let j = n+1;
     for (let i = 0; i <= n; i++) {
       if (s[i] == "1") deck[i] = deck.splice(j,1)[0];
     }
-    disappearSet();
     setProgress();
+    disappearSet();
     setTimeout(syncGameToDeck,350);
     resetAttributes();
   }

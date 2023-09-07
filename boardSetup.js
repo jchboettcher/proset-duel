@@ -1,4 +1,8 @@
 let startTime;
+const heatTimes = [0];
+const setSizes = [];
+let wrongSubmits = 0;
+let totalSelects = 0;
 let stopTimeId;
 let scrunch = rand;
 
@@ -72,11 +76,38 @@ window.onresize = resizeWindow;
 
 const updateTimer = () => document.getElementById("timer").innerText=(new Date()).getTime()-startTime;
 
+const getResults = (sharing=false) => {
+  const msToSec = t => {
+    const sec = (t/1000).toString();
+    const period = sec.indexOf(".");
+    if (period == -1) return sec+".000";
+    return sec+"0".repeat(4-(sec.length-period));
+  }
+  const percent = r => {
+    const out = Math.round(setSizes.reduce((a,b)=>a+b)/totalSelects*1000);
+    if (out % 10 == 0) return out/10+".0";
+    return out/10;
+  }
+  const diffs = [...setSizes.keys()].map(i => [heatTimes[i+1]-heatTimes[i],setSizes[i],i]);
+  const bestSet = diffs.reduce((min, el) => (el[0] < min[0] ? el : min));
+  const bestNonLast = diffs.slice(0,setSizes.length-1).reduce((min, el) => (el[0] < min[0] ? el : min));
+  const worstSet = diffs.reduce((max, el) => (el[0] > max[0] ? el : max));
+  return [
+    `Time: ${msToSec(heatTimes[heatTimes.length-1])}s`,
+    `Set accuracy: ${setSizes.length}/${setSizes.length+wrongSubmits}`,
+    `Card accuracy: ${percent(setSizes.reduce((a,b)=>a+b)/totalSelects*1000)}%${(wrongSubmits==0 && sharing) ? " 💯" : ""}`,
+    `Best set: ${msToSec(bestSet[0])}s (#${bestSet[2]+1}: ${bestSet[1]} cards)`,
+    `Best non-last: ${msToSec(bestNonLast[0])}s (#${bestNonLast[2]+1}: ${bestNonLast[1]} cards)`,
+    `Worst set: ${msToSec(worstSet[0])}s (#${worstSet[2]+1}: ${worstSet[1]} cards)`,
+  ]
+}
+
 const copyScore = () => {
   document.querySelector(':root').style.setProperty("--can-select","text");
   const aux = document.createElement("textarea");
-  let s = `${rand ? "Random" : "Daily"} Proset ${n}-dot: ${document.getElementById("timer").innerText/1000}s\n`;
-  s += `jchboettcher.github.io/proset-duel/?${rand ? "random" : "daily"}/${n}${rand ? "/"+day : ""}`
+  let s = `${rand ? "Random" : "Daily"} ${n}-dot Proset${rand ? "" : (" #"+"0".repeat(Math.max(4-day.toString().length,0))+day)}\n`;
+  s += getResults(true).join("\n")+"\n";
+  s += `jchboettcher.github.io/proset-duel/?${rand ? "random" : "daily"}/${n}${rand ? "/"+day : ""}`;
   // navigator.share(s);
   aux.innerHTML = s;
   document.body.appendChild(aux);
@@ -99,9 +130,21 @@ const copyScore = () => {
 
 const stopGame = () => {
   clearInterval(stopTimeId);
-  updateTimer();
-  document.getElementById("start-text").innerText = "SHARE";
-  const share = document.getElementById("start");
+  // updateTimer();
+  document.getElementById("timer").innerText = heatTimes[heatTimes.length-1];
+  // document.getElementById("start-text").innerText = "SHARE";
+  const share = document.createElement("div");
+  share.id = "share";
+  document.getElementById("game").appendChild(share);
+  share.style.visibility = "hidden";
+  placeElement(share,dims.cardH*2,dims.cardH);
+  share.style.borderWidth = dims.selectW+"px";
+  share.style.borderRadius = dims.cardRad+"px";
+  share.style.fontSize = dims.cardH/5+"px";
+  const shareText = document.createElement("h1");
+  shareText.innerText = "SHARE";
+  shareText.style.height = dims.cardH+"px";
+  share.appendChild(shareText);
   if (device == "DESKTOP") {
     share.onclick = copyScore;
   } else {
@@ -131,6 +174,7 @@ const clickCard = id => {
   // console.log(card.getAttribute("gone"));
   if (card.toggleAttribute("selected")) {
     card.style.borderWidth = dims.selectW+"px";
+    totalSelects++;
   } else {
     card.toggleAttribute("red", false);
     card.toggleAttribute("toggler", false);
