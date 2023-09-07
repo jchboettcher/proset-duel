@@ -14,12 +14,6 @@ const colors = [
   "rgb(255,255,255)",
 ]
 
-const device = window.getUserDevice();
-if (device != "DESKTOP") {
-  window.scrollTo(0, 1);
-  window.addEventListener("orientationchange", () => window.scrollTo(0, 1));
-}
-
 const outerMargin = device=="DESKTOP" ? 100 : 30;         // px
 const innerMarginUnits = device=="DESKTOP" ? 5/6 : 3/6;   // wrt cardH
 const innerBtwnUnits = 1/6;                               // wrt cardH

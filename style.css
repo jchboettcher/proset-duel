@@ -66,145 +66,145 @@ body {
 
 @keyframes rjiggle {
   0% {
-    transform: rotate(0deg);
+    rotate: 0deg;
   }
   10% {
-    transform: rotate(3deg);
+    rotate: 3deg;
   }
   23.5% {
-    transform: rotate(-1.5deg);
+    rotate: -1.5deg;
   }
   41.8% {
-    transform: rotate(0.75deg);
+    rotate: 0.75deg;
   }
   66.5% {
-    transform: rotate(-0.375deg);
+    rotate: -0.375deg;
   }
 }
 
 @keyframes ljiggle {
   0% {
-    transform: rotate(0deg);
+    rotate: 0deg;
   }
   10% {
-    transform: rotate(-3deg);
+    rotate: -3deg;
   }
   23.5% {
-    transform: rotate(1.5deg);
+    rotate: 1.5deg;
   }
   41.8% {
-    transform: rotate(-0.75deg);
+    rotate: -0.75deg;
   }
   66.5% {
-    transform: rotate(0.375deg);
+    rotate: 0.375deg;
   }
 }
 
 @keyframes rjiggle2 {
   0% {
-    transform: rotate(0deg);
+    rotate: 0deg;
   }
   10% {
-    transform: rotate(3deg);
+    rotate: 3deg;
   }
   23.5% {
-    transform: rotate(-1.5deg);
+    rotate: -1.5deg;
   }
   41.8% {
-    transform: rotate(0.75deg);
+    rotate: 0.75deg;
   }
   66.5% {
-    transform: rotate(-0.375deg);
+    rotate: -0.375deg;
   }
 }
 
 @keyframes ljiggle2 {
   0% {
-    transform: rotate(0deg);
+    rotate: 0deg;
   }
   10% {
-    transform: rotate(-3deg);
+    rotate: -3deg;
   }
   23.5% {
-    transform: rotate(1.5deg);
+    rotate: 1.5deg;
   }
   41.8% {
-    transform: rotate(-0.75deg);
+    rotate: -0.75deg;
   }
   66.5% {
-    transform: rotate(0.375deg);
+    rotate: 0.375deg;
   }
 }
 
 @keyframes rjiggle3 {
   0% {
-    transform: rotate(0deg);
+    rotate: 0deg;
   }
   10% {
-    transform: rotate(3deg);
+    rotate: 3deg;
   }
   23.5% {
-    transform: rotate(-1.5deg);
+    rotate: -1.5deg;
   }
   41.8% {
-    transform: rotate(0.75deg);
+    rotate: 0.75deg;
   }
   66.5% {
-    transform: rotate(-0.375deg);
+    rotate: -0.375deg;
   }
 }
 
 @keyframes ljiggle3 {
   0% {
-    transform: rotate(0deg);
+    rotate: 0deg;
   }
   10% {
-    transform: rotate(-3deg);
+    rotate: -3deg;
   }
   23.5% {
-    transform: rotate(1.5deg);
+    rotate: 1.5deg;
   }
   41.8% {
-    transform: rotate(-0.75deg);
+    rotate: -0.75deg;
   }
   66.5% {
-    transform: rotate(0.375deg);
+    rotate: 0.375deg;
   }
 }
 
 @keyframes rjiggle4 {
   0% {
-    transform: rotate(0deg);
+    rotate: 0deg;
   }
   10% {
-    transform: rotate(3deg);
+    rotate: 3deg;
   }
   23.5% {
-    transform: rotate(-1.5deg);
+    rotate: -1.5deg;
   }
   41.8% {
-    transform: rotate(0.75deg);
+    rotate: 0.75deg;
   }
   66.5% {
-    transform: rotate(-0.375deg);
+    rotate: -0.375deg;
   }
 }
 
 @keyframes ljiggle4 {
   0% {
-    transform: rotate(0deg);
+    rotate: 0deg;
   }
   10% {
-    transform: rotate(-3deg);
+    rotate: -3deg;
   }
   23.5% {
-    transform: rotate(1.5deg);
+    rotate: 1.5deg;
   }
   41.8% {
-    transform: rotate(-0.75deg);
+    rotate: -0.75deg;
   }
   66.5% {
-    transform: rotate(0.375deg);
+    rotate: 0.375deg;
   }
 }
 

@@ -13,3 +13,9 @@ window.getUserDevice = () => {
   if (mobileAndTabletCheck()) return "TABLET";
   return "DESKTOP";
 }
+
+const device = window.getUserDevice();
+if (device != "DESKTOP") {
+  window.addEventListener("load", () => setTimeout(window.scrollTo(0, 1)), 30);
+  window.addEventListener("orientationchange", () => setTimeout(window.scrollTo(0, 1)), 30);
+}
