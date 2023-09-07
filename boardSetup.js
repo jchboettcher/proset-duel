@@ -15,6 +15,10 @@ const colors = [
 ]
 
 const device = window.getUserDevice();
+if (device != "DESKTOP") {
+  window.scrollTo(0, 1);
+  window.addEventListener("orientationchange", () => window.scrollTo(0, 1));
+}
 
 const outerMargin = device=="DESKTOP" ? 100 : 30;         // px
 const innerMarginUnits = device=="DESKTOP" ? 5/6 : 3/6;   // wrt cardH
@@ -22,8 +26,8 @@ const innerBtwnUnits = 1/6;                               // wrt cardH
 const cornerRatio = 0.07;                                 // wrt cardH
 const dotScale = 1.35;                                    // wrt dividing card evenly (btwn==dot)
 const fixedCardW = 10;                                    // vw
-const borderW = device=="DESKTOP" ? 1.666 : 2.25;         // % of cardH
-const selectW = device=="DESKTOP" ? 2.85 : 3.849;         // % of cardH
+const borderW = device=="DESKTOP" ? 1.666 : 2;            // % of cardH
+const selectW = device=="DESKTOP" ? 2.85 : 3.431;         // % of cardH
 
 const getDimensions = vw => {
   const numCardCols = [[3,3],[3,3],[3,4],[3,4],[3,5],[4,5]][n-4][scrunch?0:1];
@@ -97,8 +101,8 @@ const stopGame = () => {
   if (device == "DESKTOP") {
     share.onclick = copyScore;
   } else {
-    // share.ontouchstart = copyScore;
-    share.onclick = copyScore;
+    share.ontouchstart = copyScore;
+    // share.onclick = copyScore;
   }
   setTimeout(() => {
     share.style.visibility = "visible";
@@ -147,8 +151,8 @@ const createCard = (id,numCols,numRows) => {
   if (device == "DESKTOP") {
     card.onclick = () => clickCard(id);
   } else {
-    // card.ontouchstart = () => clickCard(id);
-    card.onclick = () => clickCard(id);
+    card.ontouchstart = () => clickCard(id);
+    // card.onclick = () => clickCard(id);
   }
   let dotCount = 0;
   for (let i = 0; i < numRows; i++) {
@@ -229,8 +233,8 @@ const setUpGameDiv = () => {
   if (device == "DESKTOP") {
     startDiv.onclick = startGame;
   } else {
-    // startDiv.ontouchstart = startGame;
-    startDiv.onclick = startGame;
+    startDiv.ontouchstart = startGame;
+    // startDiv.onclick = startGame;
   }
 }
 

@@ -81,10 +81,10 @@ if (device == "DESKTOP") {
   bodyDiv.onclick = bodyDivClick;
   gameDiv.onclick = gameDivClick;
 } else {
-  // document.body.ontouchstart = bodyClick;
-  // bodyDiv.ontouchstart = bodyDivClick;
-  // gameDiv.ontouchstart = gameDivClick;
-  document.body.onclick = bodyClick;
-  bodyDiv.onclick = bodyDivClick;
-  gameDiv.onclick = gameDivClick;
+  document.body.ontouchstart = bodyClick;
+  bodyDiv.ontouchstart = bodyDivClick;
+  gameDiv.ontouchstart = gameDivClick;
+  // document.body.onclick = bodyClick;
+  // bodyDiv.onclick = bodyDivClick;
+  // gameDiv.onclick = gameDivClick;
 }
