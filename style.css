@@ -2,9 +2,9 @@ body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
   font-style: bold;
-  /* position: relative;
+  position: relative;
   width: 100dvw;
-  height: 100dvh; */
+  height: 100dvh;
 }
 
 #timer {
@@ -26,11 +26,11 @@ body {
 }
 
 #bodydiv {
-  position: relative;
+  position: absolute;
   /* top: 0;
   left: 0; */
-  width: 100dvw;
-  height: 100dvh;
+  /* width: 100dvw;
+  height: 100dvh; */
 }
 
 #game,#progress-bar,#start,.row,.card,.dot {

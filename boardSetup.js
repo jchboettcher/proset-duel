@@ -74,16 +74,19 @@ const copyScore = () => {
   aux.innerHTML = s
   document.body.appendChild(aux);
   aux.select();
-  aux.setSelectionRange(0,99999);
-  navigator.clipboard
-    .writeText(aux.value)
-    .then(() => {
-      alert("Copied results to clipboard!");
-      document.body.removeChild(aux);
-    })
-    .catch(() => {
-      alert("Sorry, unable to copy results.");
-    });
+  document.execCommand("copy");
+  alert(`Copied results to clipboard!: ${aux.value}`);
+  document.body.removeChild(aux);
+  // aux.setSelectionRange(0,99999);
+  // navigator.clipboard
+  //   .writeText(aux.value)
+  //   .then(() => {
+  //     alert("Copied results to clipboard!");
+  //     document.body.removeChild(aux);
+  //   })
+  //   .catch(() => {
+  //     alert("Sorry, unable to copy results.");
+  //   });
 }
 
 const stopGame = () => {
@@ -93,8 +96,8 @@ const stopGame = () => {
   const share = document.getElementById("start");
   if (device == "DESKTOP") {
     share.onclick = copyScore;
-  } else {
-    share.ontouchstart = copyScore;
+  // } else {
+  //   share.ontouchstart = copyScore;
   }
   setTimeout(() => {
     share.style.visibility = "visible";
@@ -178,6 +181,8 @@ const placeElement = (el,w,h,x=0,y=0) => {
 }
 
 const setUpGameDiv = () => {
+  const bodyDiv = document.getElementById("bodydiv");
+  placeElement(bodyDiv,dims.boxW+2*outerMargin,dims.boxH+2*outerMargin);
   const gameDiv = document.getElementById("game");
   placeElement(gameDiv,dims.boxW,dims.boxH);
   gameDiv.style.borderWidth = dims.borderW+"px";
@@ -197,7 +202,7 @@ const setUpGameDiv = () => {
   // const ys = [[[-0.5,-0.5],[0.5,0.5]],[[-1,-1]]][numCardRows-2];
   for (let i = 0; i < numCardRows; i++) {
     const row = document.createElement("div");
-    row.className = "row";
+    row.className = "row ofcards";
     const y = (-(numCardRows-1)/2+i)*(dims.cardH+dims.innerBtwn);
     placeElement(row,dims.boxW-2*dims.innerMargin,dims.cardH,0,y)
     for (let j = 0; j < rowLens[i]; j++) {

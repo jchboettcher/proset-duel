@@ -61,7 +61,7 @@ const bodyDivClick = e => {
 
 const gameDivClick = e => {
   const classList = e.target.classList
-  if (gameDiv != e.target && !classList.contains("btwn")) return;
+  if (gameDiv != e.target && !classList.contains("ofcards")) return;
   submitSet();
 }
 
