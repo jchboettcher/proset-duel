@@ -1,8 +1,10 @@
 const disappearSet = () => {
   [...document.querySelectorAll("[selected]")].forEach(el=>{
     el.toggleAttribute("gone",true);
+    el.toggleAttribute("appear",false);
     el.toggleAttribute("selected",false);
     el.style.borderWidth = dims.borderW+"px";
+    setTimeout(() => el.toggleAttribute("gone",false), 700);
   });
 }
 

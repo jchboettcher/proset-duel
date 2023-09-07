@@ -118,7 +118,8 @@ const setProgress = () => {
 
 const clickCard = id => {
   const card = document.getElementById(id);
-  card.toggleAttribute("gone", false);
+  // card.toggleAttribute("gone", false);
+  console.log(card.getAttribute("gone"));
   if (card.toggleAttribute("selected")) {
     card.style.borderWidth = dims.selectW+"px";
   } else {
@@ -241,7 +242,7 @@ const showCards = () => {
     const card = document.getElementById("card"+i);
     card.toggleAttribute("appear",true);
     card.style.visibility = "visible";
-    setTimeout(() => card.toggleAttribute("appear",false),400);
+    setTimeout(() => card.toggleAttribute("appear",false),3110);
   }
   startTime = (new Date()).getTime();
   stopTimeId = setInterval(updateTimer,13);

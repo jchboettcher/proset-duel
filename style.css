@@ -267,24 +267,24 @@ body {
   0% {
     scale: 1;
   }
-  40% {
+  45% {
     scale: 0;
   }
-  60% {
+  55% {
     scale: 0;
   }
-  100% {
+  /* 100% {
     scale: 1;
-  }
+  } */
 }
 
 @keyframes deal {
   from {
     scale: 0;
   }
-  to {
+  /* to {
     scale: 1;
-  }
+  } */
 }
 
 .card[gone] {
@@ -293,5 +293,69 @@ body {
 }
 
 .card[appear],#start[appear] {
-  animation: deal 0.4s;
+  animation: deal 3.11s;
+}
+
+.card[rjiggle][gone] {
+  animation: redeal 0.7s,rjiggle 0.85s;
+}
+
+.card[ljiggle][gone] {
+  animation: redeal 0.7s,ljiggle 0.85s;
+}
+
+.card[selected][rjiggle][gone] {
+  animation: redeal 0.7s,rjiggle2 0.85s;
+}
+
+.card[selected][ljiggle][gone] {
+  animation: redeal 0.7s,ljiggle2 0.85s;
+}
+
+.card[red][rjiggle][gone] {
+  animation: redeal 0.7s,rjiggle3 0.85s, redAnim 1s;
+}
+
+.card[red][ljiggle][gone] {
+  animation: redeal 0.7s,ljiggle3 0.85s, redAnim 1s;
+}
+
+.card[red][toggler][rjiggle][gone] {
+  animation: redeal 0.7s,rjiggle4 0.85s, redAnim2 1s;
+}
+
+.card[red][toggler][ljiggle][gone] {
+  animation: redeal 0.7s,ljiggle4 0.85s, redAnim2 1s;
+}
+
+.card[rjiggle][appear] {
+  animation: deal 3.11s,rjiggle 0.85s;
+}
+
+.card[ljiggle][appear] {
+  animation: deal 3.11s,ljiggle 0.85s;
+}
+
+.card[selected][rjiggle][appear] {
+  animation: deal 3.11s,rjiggle2 0.85s;
+}
+
+.card[selected][ljiggle][appear] {
+  animation: deal 3.11s,ljiggle2 0.85s;
+}
+
+.card[red][rjiggle][appear] {
+  animation: deal 3.11s,rjiggle3 0.85s, redAnim 1s;
+}
+
+.card[red][ljiggle][appear] {
+  animation: deal 3.11s,ljiggle3 0.85s, redAnim 1s;
+}
+
+.card[red][toggler][rjiggle][appear] {
+  animation: deal 3.11s,rjiggle4 0.85s, redAnim2 1s;
+}
+
+.card[red][toggler][ljiggle][appear] {
+  animation: deal 3.11s,ljiggle4 0.85s, redAnim2 1s;
 }
