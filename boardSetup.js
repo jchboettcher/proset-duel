@@ -105,8 +105,8 @@ const stopGame = () => {
   if (device == "DESKTOP") {
     share.onclick = copyScore;
   } else {
-    share.ontouchstart = copyScore;
-    // share.onclick = copyScore;
+    share.ontouchstart = () => {};
+    share.onclick = copyScore;
   }
   setTimeout(() => {
     share.style.visibility = "visible";
