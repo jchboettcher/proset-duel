@@ -96,8 +96,9 @@ const stopGame = () => {
   const share = document.getElementById("start");
   if (device == "DESKTOP") {
     share.onclick = copyScore;
-  // } else {
-  //   share.ontouchstart = copyScore;
+  } else {
+    // share.ontouchstart = copyScore;
+    share.onclick = copyScore;
   }
   setTimeout(() => {
     share.style.visibility = "visible";
@@ -119,7 +120,7 @@ const setProgress = () => {
 const clickCard = id => {
   const card = document.getElementById(id);
   // card.toggleAttribute("gone", false);
-  console.log(card.getAttribute("gone"));
+  // console.log(card.getAttribute("gone"));
   if (card.toggleAttribute("selected")) {
     card.style.borderWidth = dims.selectW+"px";
   } else {
@@ -146,7 +147,8 @@ const createCard = (id,numCols,numRows) => {
   if (device == "DESKTOP") {
     card.onclick = () => clickCard(id);
   } else {
-    card.ontouchstart = () => clickCard(id);
+    // card.ontouchstart = () => clickCard(id);
+    card.onclick = () => clickCard(id);
   }
   let dotCount = 0;
   for (let i = 0; i < numRows; i++) {
@@ -227,7 +229,8 @@ const setUpGameDiv = () => {
   if (device == "DESKTOP") {
     startDiv.onclick = startGame;
   } else {
-    startDiv.ontouchstart = startGame;
+    // startDiv.ontouchstart = startGame;
+    startDiv.onclick = startGame;
   }
 }
 
@@ -242,7 +245,7 @@ const showCards = () => {
     const card = document.getElementById("card"+i);
     card.toggleAttribute("appear",true);
     card.style.visibility = "visible";
-    setTimeout(() => card.toggleAttribute("appear",false),3110);
+    setTimeout(() => card.toggleAttribute("appear",false),400);
   }
   startTime = (new Date()).getTime();
   stopTimeId = setInterval(updateTimer,13);

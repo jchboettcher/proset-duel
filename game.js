@@ -51,14 +51,23 @@ document.onkeyup = e => {
 const bodyDiv = document.getElementById("bodydiv");
 const gameDiv = document.getElementById("game");
 
-const bodyDivClick = e => {
-  if (bodyDiv !== e.target) return;
+const deselectAll = () => {
   [...document.querySelectorAll("[selected]")].forEach(el=>{
     el.toggleAttribute("selected",false);
     el.toggleAttribute("red", false);
     el.toggleAttribute("toggler", false);
     el.style.borderWidth = dims.borderW+"px";
   });
+}
+
+const bodyClick = e => {
+  if (document.body !== e.target) return;
+  deselectAll();
+}
+
+const bodyDivClick = e => {
+  if (bodyDiv !== e.target) return;
+  deselectAll();
 }
 
 const gameDivClick = e => {
@@ -68,9 +77,14 @@ const gameDivClick = e => {
 }
 
 if (device == "DESKTOP") {
+  document.body.onclick = bodyClick;
   bodyDiv.onclick = bodyDivClick;
   gameDiv.onclick = gameDivClick;
 } else {
-  bodyDiv.ontouchstart = bodyDivClick;
-  gameDiv.ontouchstart = gameDivClick;
+  // document.body.ontouchstart = bodyClick;
+  // bodyDiv.ontouchstart = bodyDivClick;
+  // gameDiv.ontouchstart = gameDivClick;
+  document.body.onclick = bodyClick;
+  bodyDiv.onclick = bodyDivClick;
+  gameDiv.onclick = gameDivClick;
 }

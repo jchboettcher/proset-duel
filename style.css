@@ -293,7 +293,7 @@ body {
 }
 
 .card[appear],#start[appear] {
-  animation: deal 3.11s;
+  animation: deal 0.4s;
 }
 
 .card[rjiggle][gone] {
@@ -329,33 +329,33 @@ body {
 }
 
 .card[rjiggle][appear] {
-  animation: deal 3.11s,rjiggle 0.85s;
+  animation: deal 0.4s,rjiggle 0.85s;
 }
 
 .card[ljiggle][appear] {
-  animation: deal 3.11s,ljiggle 0.85s;
+  animation: deal 0.4s,ljiggle 0.85s;
 }
 
 .card[selected][rjiggle][appear] {
-  animation: deal 3.11s,rjiggle2 0.85s;
+  animation: deal 0.4s,rjiggle2 0.85s;
 }
 
 .card[selected][ljiggle][appear] {
-  animation: deal 3.11s,ljiggle2 0.85s;
+  animation: deal 0.4s,ljiggle2 0.85s;
 }
 
 .card[red][rjiggle][appear] {
-  animation: deal 3.11s,rjiggle3 0.85s, redAnim 1s;
+  animation: deal 0.4s,rjiggle3 0.85s, redAnim 1s;
 }
 
 .card[red][ljiggle][appear] {
-  animation: deal 3.11s,ljiggle3 0.85s, redAnim 1s;
+  animation: deal 0.4s,ljiggle3 0.85s, redAnim 1s;
 }
 
 .card[red][toggler][rjiggle][appear] {
-  animation: deal 3.11s,rjiggle4 0.85s, redAnim2 1s;
+  animation: deal 0.4s,rjiggle4 0.85s, redAnim2 1s;
 }
 
 .card[red][toggler][ljiggle][appear] {
-  animation: deal 3.11s,ljiggle4 0.85s, redAnim2 1s;
+  animation: deal 0.4s,ljiggle4 0.85s, redAnim2 1s;
 }
