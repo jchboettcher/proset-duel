@@ -14,22 +14,25 @@ const colors = [
   "rgb(255,255,255)",
 ]
 
-const outerMargin = device=="DESKTOP" ? 100 : 30;         // px
+const device = window.getUserDevice();
+
+const outerMargin = device=="DESKTOP" ? 100 : 50;         // px
 const innerMarginUnits = device=="DESKTOP" ? 5/6 : 3/6;   // wrt cardH
 const innerBtwnUnits = 1/6;                               // wrt cardH
 const cornerRatio = 0.07;                                 // wrt cardH
 const dotScale = 1.35;                                    // wrt dividing card evenly (btwn==dot)
-const fixedCardW = 10;                                    // vw
+const fixedCardW = device=="DESKTOP" ? 10 : 20;           // vw
 const borderW = device=="DESKTOP" ? 1.666 : 2;            // % of cardH
 const selectW = device=="DESKTOP" ? 2.85 : 3.431;         // % of cardH
+const extraSlide = device=="DESKTOP" ? 0 : 50;            // vh
 
 const getDimensions = vw => {
   const numCardCols = [[3,3],[3,3],[3,4],[3,4],[3,5],[4,5]][n-4][scrunch?0:1];
   const numDotCols = n>6 ? 3 : 2;
   const numCardRows = (scrunch && n > 5) ? 3 : 2;
   const numDotRows = n>4 ? 3 : 2;
+
   const cardH = fixedCardW/100*vw;
-  // const baseUnit = cardH/cardUnits;
   const innerMargin = cardH*innerMarginUnits;
   const innerBtwn = cardH*innerBtwnUnits;
   const cardRad = cardH*cornerRatio;
@@ -53,13 +56,15 @@ const getDimensions = vw => {
 const {numCardCols,numCardRows,numDotCols,numDotRows,dims} = getDimensions(window.innerWidth);
 
 const resizeWindow = () => {
-  document.body.style.width = window.innerWidth+"px";
-  document.body.style.height = window.innerHeight+"px";
+  const bodyDiv = document.getElementById("bodydiv");
+  bodyDiv.style.top = `${window.innerHeight/2}px`;
+  const outmost = document.getElementById("outmost");
+  outmost.style.width = window.innerWidth+"px";
+  outmost.style.height = window.innerHeight*(100+extraSlide)/100+"px";
   const mobileScale = Math.min(
     window.innerWidth/(dims.boxW+2*outerMargin),
     window.innerHeight/(dims.boxH+2*outerMargin));
   const desktopScale = Math.min(1,mobileScale);
-  const bodyDiv = document.getElementById("bodydiv");
   bodyDiv.style.scale = device=="DESKTOP" ? desktopScale : mobileScale;
 }
 
@@ -68,25 +73,28 @@ window.onresize = resizeWindow;
 const updateTimer = () => document.getElementById("timer").innerText=(new Date()).getTime()-startTime;
 
 const copyScore = () => {
+  document.querySelector(':root').style.setProperty("--can-select","text");
   const aux = document.createElement("textarea");
   let s = `${rand ? "Random" : "Daily"} Proset ${n}-dot: ${document.getElementById("timer").innerText/1000}s\n`;
   s += `jchboettcher.github.io/proset-duel/?${rand ? "random" : "daily"}/${n}${rand ? "/"+day : ""}`
-  aux.innerHTML = s
+  // navigator.share(s);
+  aux.innerHTML = s;
   document.body.appendChild(aux);
   aux.select();
-  document.execCommand("copy");
-  alert(`Copied results to clipboard!: ${aux.value}`);
-  document.body.removeChild(aux);
-  // aux.setSelectionRange(0,99999);
-  // navigator.clipboard
-  //   .writeText(aux.value)
-  //   .then(() => {
-  //     alert("Copied results to clipboard!");
-  //     document.body.removeChild(aux);
-  //   })
-  //   .catch(() => {
-  //     alert("Sorry, unable to copy results.");
-  //   });
+  // document.execCommand("copy");
+  // alert(`Copied results to clipboard!: ${aux.value}`);
+  // document.body.removeChild(aux);
+  aux.setSelectionRange(0,99999);
+  navigator.clipboard
+    .writeText(aux.value)
+    .then(() => {
+      alert("Copied results to clipboard!");
+      document.body.removeChild(aux);
+    })
+    .catch(e => {
+      alert("Sorry, unable to copy results: "+e);
+      console.warn(e);
+    });
 }
 
 const stopGame = () => {
@@ -184,14 +192,21 @@ const placeElement = (el,w,h,x=0,y=0) => {
 }
 
 const setUpGameDiv = () => {
-  document.body.style.width = window.innerWidth+"px";
-  document.body.style.height = window.innerHeight+"px";
+  const outmost = document.getElementById("outmost");
+  outmost.style.width = window.innerWidth+"px";
+  outmost.style.height = window.innerHeight*(100+extraSlide)/100+"px";
   const bodyDiv = document.getElementById("bodydiv");
+  // bodyDiv.style.width = (dims.boxW+2*outerMargin)+"px";
+  // bodyDiv.style.height = (dims.boxH+2*outerMargin)+"px";
+  // bodyDiv.style.top = "0px";
+  // bodyDiv.style.left = "0px";
   placeElement(bodyDiv,dims.boxW+2*outerMargin,dims.boxH+2*outerMargin);
+  bodyDiv.style.top = `${window.innerHeight/2}px`;
+  // bodyDiv.style.top = "50%";
   const gameDiv = document.getElementById("game");
   placeElement(gameDiv,dims.boxW,dims.boxH);
   gameDiv.style.borderWidth = dims.borderW+"px";
-  gameDiv.className = "grid btwn";
+  gameDiv.className = "grid";
   const bar = document.getElementById("progress-bar");
   placeElement(bar,dims.boxW,0,0,-dims.boxH/2-dims.borderW*1.5);
   bar.style.borderWidth = dims.borderW+"px";
@@ -236,9 +251,9 @@ const setUpGameDiv = () => {
   }
 }
 
-const disableDoubleClicks = () => {
+const makeAllClickable = () => {
   [...document.querySelectorAll("*")].forEach(el => {
-    el.ondblclick = e => {e.preventDefault()};
+    el.onclick = () => {};
   })
 }
 
@@ -272,13 +287,19 @@ const syncGameToDeck = () => {
 }
 
 const startGame = () => {
+  document.querySelector(':root').style.setProperty("--can-select","none");
   document.getElementById("start").style.visibility = "hidden";
   setProgress();
   showCards();
   syncGameToDeck();
+  window.scrollTo(0, 1);
+  // if (device != "DESKTOP") {
+  //   window.addEventListener("load", () => setTimeout(window.scrollTo(0, 1)), 30);
+  //   window.addEventListener("orientationchange", () => setTimeout(window.scrollTo(0, 1)), 30);
+  // }
 }
 
 setUpGameDiv();
 resizeWindow();
 makeDeck();
-disableDoubleClicks();
+if (device != "DESKTOP") makeAllClickable();

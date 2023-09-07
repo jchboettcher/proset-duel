@@ -48,6 +48,7 @@ document.onkeyup = e => {
   }
 }
 
+const outmostDiv = document.getElementById("outmost");
 const bodyDiv = document.getElementById("bodydiv");
 const gameDiv = document.getElementById("game");
 
@@ -60,8 +61,8 @@ const deselectAll = () => {
   });
 }
 
-const bodyClick = e => {
-  if (document.body !== e.target) return;
+const outmostClick = e => {
+  if (outmostDiv !== e.target) return;
   deselectAll();
 }
 
@@ -77,11 +78,11 @@ const gameDivClick = e => {
 }
 
 if (device == "DESKTOP") {
-  document.body.onclick = bodyClick;
+  outmostDiv.onclick = outmostClick;
   bodyDiv.onclick = bodyDivClick;
   gameDiv.onclick = gameDivClick;
 } else {
-  document.body.ontouchstart = bodyClick;
+  outmostDiv.ontouchstart = outmostClick;
   bodyDiv.ontouchstart = bodyDivClick;
   gameDiv.ontouchstart = gameDivClick;
   // document.body.onclick = bodyClick;
