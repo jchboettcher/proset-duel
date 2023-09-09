@@ -10,17 +10,17 @@ body {
   height: 100vh; */
 }
 
-#timer {
+/* #timer {
   position: absolute;
   top: 1%;
   left: 1%;
-}
+} */
 
-#cardsLeft {
+/* #cardsLeft {
   position: absolute;
   top: 1%;
   right: 1%;
-}
+} */
 
 #gameTitle {
   position: absolute;
@@ -50,6 +50,10 @@ body {
   /* transform: perspective(1px); */
 }
 
+.card,#start,#share,#new {
+  cursor: pointer;
+}
+
 .resultLeft,.resultLine,.resultRight {
   -webkit-touch-callout: var(--can-select); /* iOS Safari */
     -webkit-user-select: var(--can-select); /* Safari */
@@ -74,12 +78,12 @@ body {
   height: 100dvh; */
 }
 
-#game,#progress-bar,#start,.row,.card,.dot,#share {
+#game,#progress-bar,#start,.row,.card,.dot,#share,#new {
   box-sizing: border-box;
   position: absolute;
 }
 
-#resultsDiv,.resultLine,.resultRight,.resultLeft,#start-text,#share-text {
+#resultsDiv,.resultLine,.resultRight,.resultLeft,#start-text,#share-text,#timer,#cardsLeft {
   position: absolute;
 }
 
@@ -91,13 +95,13 @@ body {
   left: 0%;
 }
 
-#game,#start,#share {
+#game,#start,#share,#new {
   background: rgb(245,245,245);
   border: solid black;
   /* border-radius: 15px; */
 }
 
-#start,#share {
+#start,#share,#new {
   text-align: center;
 }
 

@@ -108,9 +108,9 @@ const getResults = (sharing=false) => {
     `Time: ${formatTime(heatTimes[heatTimes.length-1])}`,
     `Set accuracy: ${setSizes.length}/${setSizes.length+wrongSubmits}${(wrongSubmits==0 && sharing) ? " 💯" : ""}`,
     `Card accuracy: ${percent(setSizes.reduce((a,b)=>a+b)/totalSelects*1000)}%`,
-    `Best set: ${formatTime(bestSet[0])} (#${bestSet[2]+1}: ${bestSet[1]} cards)`,
-    `Best non-last: ${formatTime(bestNonLast[0])} (#${bestNonLast[2]+1}: ${bestNonLast[1]} cards)`,
-    `Worst set: ${formatTime(worstSet[0])} (#${worstSet[2]+1}: ${worstSet[1]} cards)`,
+    `Best set: ${formatTime(bestSet[0])} (#${bestSet[2]+1}: ${bestSet[1]})`,
+    `Best non-last: ${formatTime(bestNonLast[0])} (#${bestNonLast[2]+1}: ${bestNonLast[1]})`,
+    `Worst set: ${formatTime(worstSet[0])} (#${worstSet[2]+1}: ${worstSet[1]})`,
   ]
 }
 
@@ -142,28 +142,30 @@ const copyScore = () => {
 const stopGame = () => {
   document.querySelector(':root').style.setProperty("--can-select","text");
   clearInterval(stopTimeId);
+
   // heatTimes[heatTimes.length-1] *= 1000;
   // setSizes[setSizes.length-1] = 10;
   // setSizes.push(2);
   // setSizes.push(2);
   // heatTimes.push(12345);
   // heatTimes.push(12345);
-  // document.getElementById("start").style.visibility = "hidden";
-  // updateTimer();
+
+  document.getElementById("start").style.visibility = "hidden";
   document.getElementById("timer").innerText = formatTime(heatTimes[heatTimes.length-1]);
-  // document.getElementById("start-text").innerText = "SHARE";
   const resultsDiv = document.createElement("div");
   resultsDiv.id = "resultsDiv";
   resultsDiv.style.visibility = "hidden";
   resultsDiv.style.fontSize = dims.cardH/6+"px";
-  const lineWidth = dims.cardH*2.8;
+  const lineWidth = dims.cardH*2.5;
   const lineHeight = dims.cardH/4.5;
-  const shareWidth = dims.cardH;
-  const shareHeight = dims.cardH*0.47;
-  const spacer = dims.cardH/13;
+  const shareHeight = dims.cardH*0.4;
+  const spacer = dims.cardH/15;
+  // const btwnShareNew = lineWidth-2*shareWidth);
+  const btwnShareNew = spacer*1.2;
+  const shareWidth = (lineWidth-btwnShareNew)/2;
   const resultHeight = lineHeight*6+shareHeight+spacer;
   resultsDiv.style.lineHeight = lineHeight+"px";
-  placeElement(resultsDiv,lineWidth,resultHeight,0,0,false);
+  placeElement(resultsDiv,lineWidth,resultHeight,0,0,46);
   const results = getResults();
   for (let i = 0; i < results.length; i++) {
     const resultString = results[i];
@@ -186,22 +188,37 @@ const stopGame = () => {
   const share = document.createElement("div");
   share.id = "share";
   resultsDiv.appendChild(share);
-  placeElement(share,shareWidth,shareHeight,0,(resultHeight-shareHeight)/2);
-  share.style.borderWidth = dims.selectW*0.9+"px";
+  placeElement(share,shareWidth,shareHeight,-(shareWidth+btwnShareNew)/1.98,(resultHeight-shareHeight)/2);
+  share.style.borderWidth = (device=="DESKTOP" ? dims.selectW*0.75 : dims.borderW)+"px";
   share.style.borderRadius = dims.cardRad+"px";
   share.style.fontSize = dims.cardH/6.6+"px";
-  const shareText = document.createElement("h3");
+  const shareText = document.createElement("h4");
   shareText.id = "share-text";
   placeElement(shareText,shareWidth,shareHeight);
   shareText.style.lineHeight = shareHeight+"px";
   shareText.innerText = "SHARE";
   share.appendChild(shareText);
-  if (device == "DESKTOP") {
-    share.onclick = copyScore;
-  } else {
+  if (device != "DESKTOP") {
     share.ontouchstart = () => {};
-    share.onclick = copyScore;
   }
+  share.onclick = copyScore;
+  const newButton = document.createElement("div");
+  newButton.id = "new";
+  resultsDiv.appendChild(newButton);
+  placeElement(newButton,shareWidth,shareHeight,(shareWidth+btwnShareNew)/1.98,(resultHeight-shareHeight)/2);
+  newButton.style.borderWidth = (device=="DESKTOP" ? dims.selectW*0.75 : dims.borderW)+"px";
+  newButton.style.borderRadius = dims.cardRad+"px";
+  newButton.style.fontSize = dims.cardH/6.6+"px";
+  const newText = document.createElement("h4");
+  newText.id = "share-text";
+  placeElement(newText,shareWidth,shareHeight);
+  newText.style.lineHeight = shareHeight+"px";
+  newText.innerText = "NEW";
+  newButton.appendChild(newText);
+  if (device != "DESKTOP") {
+    newButton.ontouchstart = () => {};
+  }
+  newButton.onclick = () => window.location.search = `?random/${n}`;
   setTimeout(() => {
     resultsDiv.style.visibility = "visible";
     resultsDiv.toggleAttribute("appear",true);
@@ -278,13 +295,13 @@ const createCard = (id,numCols,numRows) => {
   return card;
 }
 
-const placeElement = (el,w,h,x=0,y=0,fifty=true) => {
+const placeElement = (el,w,h,x=0,y=0,fifty=50) => {
   el.style.width = w+"px";
   el.style.height = h+"px";
   el.style.marginLeft = -w/2+"px";
   el.style.marginTop = -h/2+"px";
   el.style.left = `calc(50% + ${x}px)`;
-  el.style.top = `calc(${fifty ? 50 : 48.3}% + ${y}px)`;
+  el.style.top = `calc(${fifty}% + ${y}px)`;
 }
 
 const setUpGameDiv = () => {
@@ -318,9 +335,9 @@ const setUpGameDiv = () => {
   // const ys = [[[-0.5,-0.5],[0.5,0.5]],[[-1,-1]]][numCardRows-2];
   for (let i = 0; i < numCardRows; i++) {
     const row = document.createElement("div");
-    row.className = "row ofcards";
+    row.className = "row canSubmit";
     const y = (-(numCardRows-1)/2+i)*(dims.cardH+dims.innerBtwn);
-    placeElement(row,dims.boxW-2*dims.innerMargin,dims.cardH,0,y,false);
+    placeElement(row,dims.boxW-2*dims.innerMargin,dims.cardH,0,y,48.3);
     for (let j = 0; j < rowLens[i]; j++) {
       const card = createCard("card"+(cardCount++),numDotCols,numDotRows);
       card.style.visibility = "hidden";
@@ -331,7 +348,7 @@ const setUpGameDiv = () => {
     gameDiv.appendChild(row);
   }
   const startDiv = document.getElementById("start");
-  placeElement(startDiv,dims.cardH*2,dims.cardH,0,0,false);
+  placeElement(startDiv,dims.cardH*2,dims.cardH,0,0,48.3);
   startDiv.style.borderWidth = dims.selectW+"px";
   startDiv.style.borderRadius = dims.cardRad+"px";
   startDiv.style.fontSize = dims.cardH/5+"px";
@@ -348,16 +365,23 @@ const setUpGameDiv = () => {
   }
   const timer = document.createElement("div");
   timer.id = "timer";
+  timer.className = "canSubmit";
   timer.innerText = formatTime(0);
   timer.style.fontSize = dims.cardH/6+"px";
+  timer.style.top = dims.cardH/20+"px";
+  timer.style.left = dims.cardH/20+"px";
   gameDiv.appendChild(timer);
   const cardsLeft = document.createElement("div");
   cardsLeft.id = "cardsLeft";
+  cardsLeft.className = "canSubmit";
   cardsLeft.innerText = `${2**n-1} left`;
   cardsLeft.style.fontSize = dims.cardH/6+"px";
+  cardsLeft.style.top = dims.cardH/20+"px";
+  cardsLeft.style.right = dims.cardH/20+"px";
   gameDiv.appendChild(cardsLeft);
   const gameTitle = document.createElement("div");
   gameTitle.id = "gameTitle";
+  gameTitle.className = "canSubmit";
   gameTitle.innerText = `${rand ? "Random" : "Daily"} ${n}-dot ProSet${rand ? "" : (" #"+"0".repeat(Math.max(4-day.toString().length,0))+day)}`;
   gameTitle.style.fontSize = dims.cardH/4.5+"px";
   gameTitle.style.width = dims.boxW+"px"

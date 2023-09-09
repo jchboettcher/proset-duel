@@ -9,7 +9,7 @@ const possrand = () => {
   const d = Math.floor(Math.random()*1000000000);
   return "0".repeat(9-(d.toString()).length)+d;
 }
-if (search.length && !isNaN(search.substring(1))) {
+if (search.length && !isNaN(n)) {
   if (n > 3 && n < 10) {
     window.location.search = "?daily/"+n
   } else if (n < -3 && n > -10) {
@@ -26,7 +26,7 @@ if (search.length && !isNaN(search.substring(1))) {
     window.location.search = params[0]+"/6";
   } else {
     n = parseInt(params[1])
-    if (isNaN(params[1]) || n < 4 || n > 9) {
+    if (isNaN(n) || n < 4 || n > 9) {
       window.location.search = ""
     } else {
       rand = params[0] == "?random";
