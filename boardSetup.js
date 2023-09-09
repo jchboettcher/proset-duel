@@ -4,7 +4,7 @@ const setSizes = [];
 let wrongSubmits = 0;
 let totalSelects = 0;
 let stopTimeId;
-let scrunch = rand;
+let scrunch = !rand;
 
 const colors = [
   "rgb(255,0,0)",
@@ -74,15 +74,27 @@ const resizeWindow = () => {
 
 window.onresize = resizeWindow;
 
-const updateTimer = () => document.getElementById("timer").innerText=(new Date()).getTime()-startTime;
+const formatTime = t => {
+  let secs = ((Math.floor(t/10) % 6000)/100).toString();
+  const mins = Math.floor(t/1000/60) % 60;
+  const hrs = Math.floor(t/1000/60/60);
+  if (!secs.includes(".")) secs += ".00";
+  if (secs[secs.length-2] == ".") secs += "0";
+  if (hrs == 0 && mins == 0) return `${secs}s`;
+  if (secs[1] == ".") secs = "0" + secs;
+  if (hrs == 0) return `${mins}:${secs}`;
+  return `${hrs}:${mins<10 ? 0 : ""}${mins}:${secs}`;
+}
+
+const updateTimer = () => document.getElementById("timer").innerText=formatTime((new Date()).getTime()-startTime);
 
 const getResults = (sharing=false) => {
-  const msToSec = t => {
-    const sec = (t/1000).toString();
-    const period = sec.indexOf(".");
-    if (period == -1) return sec+".000";
-    return sec+"0".repeat(4-(sec.length-period));
-  }
+  // const formatTime = t => {
+  //   const sec = (t/1000).toString();
+  //   const period = sec.indexOf(".");
+  //   if (period == -1) return sec+".000";
+  //   return sec+"0".repeat(4-(sec.length-period));
+  // }
   const percent = r => {
     const out = Math.round(setSizes.reduce((a,b)=>a+b)/totalSelects*1000);
     if (out % 10 == 0) return out/10+".0";
@@ -93,19 +105,18 @@ const getResults = (sharing=false) => {
   const bestNonLast = diffs.slice(0,setSizes.length-1).reduce((min, el) => (el[0] < min[0] ? el : min));
   const worstSet = diffs.reduce((max, el) => (el[0] > max[0] ? el : max));
   return [
-    `Time: ${msToSec(heatTimes[heatTimes.length-1])}s`,
-    `Set accuracy: ${setSizes.length}/${setSizes.length+wrongSubmits}`,
-    `Card accuracy: ${percent(setSizes.reduce((a,b)=>a+b)/totalSelects*1000)}%${(wrongSubmits==0 && sharing) ? " 💯" : ""}`,
-    `Best set: ${msToSec(bestSet[0])}s (#${bestSet[2]+1}: ${bestSet[1]} cards)`,
-    `Best non-last: ${msToSec(bestNonLast[0])}s (#${bestNonLast[2]+1}: ${bestNonLast[1]} cards)`,
-    `Worst set: ${msToSec(worstSet[0])}s (#${worstSet[2]+1}: ${worstSet[1]} cards)`,
+    `Time: ${formatTime(heatTimes[heatTimes.length-1])}`,
+    `Set accuracy: ${setSizes.length}/${setSizes.length+wrongSubmits}${(wrongSubmits==0 && sharing) ? " 💯" : ""}`,
+    `Card accuracy: ${percent(setSizes.reduce((a,b)=>a+b)/totalSelects*1000)}%`,
+    `Best set: ${formatTime(bestSet[0])} (#${bestSet[2]+1}: ${bestSet[1]} cards)`,
+    `Best non-last: ${formatTime(bestNonLast[0])} (#${bestNonLast[2]+1}: ${bestNonLast[1]} cards)`,
+    `Worst set: ${formatTime(worstSet[0])} (#${worstSet[2]+1}: ${worstSet[1]} cards)`,
   ]
 }
 
 const copyScore = () => {
-  document.querySelector(':root').style.setProperty("--can-select","text");
   const aux = document.createElement("textarea");
-  let s = `${rand ? "Random" : "Daily"} ${n}-dot Proset${rand ? "" : (" #"+"0".repeat(Math.max(4-day.toString().length,0))+day)}\n`;
+  let s = `${rand ? "Random" : "Daily"} ${n}-dot ProSet${rand ? "" : (" #"+"0".repeat(Math.max(4-day.toString().length,0))+day)}\n`;
   s += getResults(true).join("\n")+"\n";
   s += `jchboettcher.github.io/proset-duel/?${rand ? "random" : "daily"}/${n}${rand ? "/"+day : ""}`;
   // navigator.share(s);
@@ -116,34 +127,74 @@ const copyScore = () => {
   // alert(`Copied results to clipboard!: ${aux.value}`);
   // document.body.removeChild(aux);
   aux.setSelectionRange(0,99999);
-  navigator.clipboard
-    .writeText(aux.value)
-    .then(() => {
-      alert("Copied results to clipboard!");
-      document.body.removeChild(aux);
-    })
-    .catch(e => {
-      alert("Sorry, unable to copy results: "+e);
-      console.warn(e);
-    });
+  try {
+    navigator.clipboard
+      .writeText(aux.value)
+      .then(() => {
+        alert("Copied results to clipboard!");
+      })
+  } catch(e) {
+    alert("Sorry, unable to copy results.");
+  };
+  document.body.removeChild(aux);
 }
 
 const stopGame = () => {
+  document.querySelector(':root').style.setProperty("--can-select","text");
   clearInterval(stopTimeId);
+  // heatTimes[heatTimes.length-1] *= 1000;
+  // setSizes[setSizes.length-1] = 10;
+  // setSizes.push(2);
+  // setSizes.push(2);
+  // heatTimes.push(12345);
+  // heatTimes.push(12345);
+  // document.getElementById("start").style.visibility = "hidden";
   // updateTimer();
-  document.getElementById("timer").innerText = heatTimes[heatTimes.length-1];
+  document.getElementById("timer").innerText = formatTime(heatTimes[heatTimes.length-1]);
   // document.getElementById("start-text").innerText = "SHARE";
+  const resultsDiv = document.createElement("div");
+  resultsDiv.id = "resultsDiv";
+  resultsDiv.style.visibility = "hidden";
+  resultsDiv.style.fontSize = dims.cardH/6+"px";
+  const lineWidth = dims.cardH*2.8;
+  const lineHeight = dims.cardH/4.5;
+  const shareWidth = dims.cardH;
+  const shareHeight = dims.cardH*0.47;
+  const spacer = dims.cardH/13;
+  const resultHeight = lineHeight*6+shareHeight+spacer;
+  resultsDiv.style.lineHeight = lineHeight+"px";
+  placeElement(resultsDiv,lineWidth,resultHeight,0,0,false);
+  const results = getResults();
+  for (let i = 0; i < results.length; i++) {
+    const resultString = results[i];
+    const resultLine = document.createElement("div");
+    const resultLeft = document.createElement("div");
+    const resultRight = document.createElement("div");
+    resultLine.className = "resultLine";
+    resultLeft.className = "resultLeft";
+    resultRight.className = "resultRight";
+    resultLine.appendChild(resultLeft);
+    resultLine.appendChild(resultRight);
+    const splitResult = resultString.split(": ");
+    resultLeft.innerText = splitResult[0]+": ";
+    resultRight.innerText = splitResult.slice(1).join(": ");
+    // resultLine.innerText = resultString;
+    placeElement(resultLine,lineWidth,lineHeight,0,-resultHeight/2+lineHeight*(i+0.5));
+    resultsDiv.appendChild(resultLine);
+  }
+  document.getElementById("game").appendChild(resultsDiv);
   const share = document.createElement("div");
   share.id = "share";
-  document.getElementById("game").appendChild(share);
-  share.style.visibility = "hidden";
-  placeElement(share,dims.cardH*2,dims.cardH);
-  share.style.borderWidth = dims.selectW+"px";
+  resultsDiv.appendChild(share);
+  placeElement(share,shareWidth,shareHeight,0,(resultHeight-shareHeight)/2);
+  share.style.borderWidth = dims.selectW*0.9+"px";
   share.style.borderRadius = dims.cardRad+"px";
-  share.style.fontSize = dims.cardH/5+"px";
-  const shareText = document.createElement("h1");
+  share.style.fontSize = dims.cardH/6.6+"px";
+  const shareText = document.createElement("h3");
+  shareText.id = "share-text";
+  placeElement(shareText,shareWidth,shareHeight);
+  shareText.style.lineHeight = shareHeight+"px";
   shareText.innerText = "SHARE";
-  shareText.style.height = dims.cardH+"px";
   share.appendChild(shareText);
   if (device == "DESKTOP") {
     share.onclick = copyScore;
@@ -152,8 +203,8 @@ const stopGame = () => {
     share.onclick = copyScore;
   }
   setTimeout(() => {
-    share.style.visibility = "visible";
-    share.toggleAttribute("appear",true);
+    resultsDiv.style.visibility = "visible";
+    resultsDiv.toggleAttribute("appear",true);
   }, 400);
 }
 
@@ -162,6 +213,7 @@ const setProgress = () => {
   const bar = document.getElementById("progress-bar");
   bar.style.transition = "width 0.8s, marginRight 0.8s";
   const progress = deck.filter(e=>e!=undefined).length/(2**n-1);
+  document.getElementById("cardsLeft").innerText = `${Math.max(0,deck.filter(e=>e!=undefined).length)} left`;
   if (progress == 0) stopGame();
   bar.style.width = `calc(${full} * ${1-progress})`;
   bar.style.marginRight = `calc(${full} * ${progress})`;
@@ -226,13 +278,13 @@ const createCard = (id,numCols,numRows) => {
   return card;
 }
 
-const placeElement = (el,w,h,x=0,y=0) => {
+const placeElement = (el,w,h,x=0,y=0,fifty=true) => {
   el.style.width = w+"px";
   el.style.height = h+"px";
   el.style.marginLeft = -w/2+"px";
   el.style.marginTop = -h/2+"px";
   el.style.left = `calc(50% + ${x}px)`;
-  el.style.top = `calc(50% + ${y}px)`;
+  el.style.top = `calc(${fifty ? 50 : 48.3}% + ${y}px)`;
 }
 
 const setUpGameDiv = () => {
@@ -268,7 +320,7 @@ const setUpGameDiv = () => {
     const row = document.createElement("div");
     row.className = "row ofcards";
     const y = (-(numCardRows-1)/2+i)*(dims.cardH+dims.innerBtwn);
-    placeElement(row,dims.boxW-2*dims.innerMargin,dims.cardH,0,y)
+    placeElement(row,dims.boxW-2*dims.innerMargin,dims.cardH,0,y,false);
     for (let j = 0; j < rowLens[i]; j++) {
       const card = createCard("card"+(cardCount++),numDotCols,numDotRows);
       card.style.visibility = "hidden";
@@ -279,13 +331,14 @@ const setUpGameDiv = () => {
     gameDiv.appendChild(row);
   }
   const startDiv = document.getElementById("start");
-  placeElement(startDiv,dims.cardH*2,dims.cardH);
+  placeElement(startDiv,dims.cardH*2,dims.cardH,0,0,false);
   startDiv.style.borderWidth = dims.selectW+"px";
   startDiv.style.borderRadius = dims.cardRad+"px";
   startDiv.style.fontSize = dims.cardH/5+"px";
   const startText = document.getElementById("start-text")
   startText.innerText = "START";
-  startText.style.height = dims.cardH+"px";
+  startText.style.lineHeight = dims.cardH+"px";
+  placeElement(startText,dims.cardH*2,dims.cardH)
   gameDiv.appendChild(startDiv);
   if (device == "DESKTOP") {
     startDiv.onclick = startGame;
@@ -293,6 +346,23 @@ const setUpGameDiv = () => {
     startDiv.ontouchstart = startGame;
     // startDiv.onclick = startGame;
   }
+  const timer = document.createElement("div");
+  timer.id = "timer";
+  timer.innerText = formatTime(0);
+  timer.style.fontSize = dims.cardH/6+"px";
+  gameDiv.appendChild(timer);
+  const cardsLeft = document.createElement("div");
+  cardsLeft.id = "cardsLeft";
+  cardsLeft.innerText = `${2**n-1} left`;
+  cardsLeft.style.fontSize = dims.cardH/6+"px";
+  gameDiv.appendChild(cardsLeft);
+  const gameTitle = document.createElement("div");
+  gameTitle.id = "gameTitle";
+  gameTitle.innerText = `${rand ? "Random" : "Daily"} ${n}-dot ProSet${rand ? "" : (" #"+"0".repeat(Math.max(4-day.toString().length,0))+day)}`;
+  gameTitle.style.fontSize = dims.cardH/4.5+"px";
+  gameTitle.style.width = dims.boxW+"px"
+  gameTitle.style.marginLeft = -dims.boxW/2+"px";
+  gameDiv.appendChild(gameTitle);
 }
 
 const makeAllClickable = () => {

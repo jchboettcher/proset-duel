@@ -3,7 +3,7 @@ const search = window.location.search;
 let n = parseInt(search.substring(1));
 const date = new Date();
 // let day = Math.floor((date - new Date(date.getFullYear(), 0, 0)) / 86400000) - (date.getFullYear()-2022)*365 - 42
-let day = Math.floor((date - new Date(2023, 8, 0)) / 86400000);
+let day = Math.floor((date - new Date(2023, 8, 7)) / 86400000);
 // console.log(search);
 const possrand = () => {
   const d = Math.floor(Math.random()*1000000000);
@@ -58,7 +58,7 @@ let deck = [];
 let refreshAttempts = 100;
 
 const hashStr = (num,attempt) => {
-  let h1 = 0xdeadbeef+n+num*10+attempt*20000, h2 = 0x41c6ce57+day+(rand ? 1000000 : 0);
+  let h2 = 0xdeadbeef+n+num*10+attempt*20000, h1 = 0x41c6ce57+day+(rand ? 1000000 : 0);
   const str = num.toString(2)+num.toString(3)+(num**2+num).toString(16);
   for (let i = 0, ch; i < str.length; i++) {
     ch = str.charCodeAt(i);

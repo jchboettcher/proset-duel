@@ -11,20 +11,32 @@ body {
 }
 
 #timer {
-  position: fixed;
-  top: 2%;
+  position: absolute;
+  top: 1%;
+  left: 1%;
+}
+
+#cardsLeft {
+  position: absolute;
+  top: 1%;
+  right: 1%;
+}
+
+#gameTitle {
+  position: absolute;
+  bottom: 1%;
   left: 50%;
-  translate: -50%;
+  text-align: center;
 }
 
 :root {
   --can-select: none;
-  -webkit-touch-callout: var(--can-select); /* iOS Safari */
-    -webkit-user-select: var(--can-select); /* Safari */
-     -khtml-user-select: var(--can-select); /* Konqueror HTML */
-       -moz-user-select: var(--can-select); /* Old versions of Firefox */
-        -ms-user-select: var(--can-select); /* Internet Explorer/Edge */
-            user-select: var(--can-select);
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;
   -ms-touch-action: manipulation;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
@@ -36,6 +48,15 @@ body {
   /* -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d; */
   /* transform: perspective(1px); */
+}
+
+.resultLeft,.resultLine,.resultRight {
+  -webkit-touch-callout: var(--can-select); /* iOS Safari */
+    -webkit-user-select: var(--can-select); /* Safari */
+     -khtml-user-select: var(--can-select); /* Konqueror HTML */
+       -moz-user-select: var(--can-select); /* Old versions of Firefox */
+        -ms-user-select: var(--can-select); /* Internet Explorer/Edge */
+            user-select: var(--can-select);
 }
 
 /* @media (-webkit-min-device-pixel-ratio: 2) {
@@ -56,6 +77,18 @@ body {
 #game,#progress-bar,#start,.row,.card,.dot,#share {
   box-sizing: border-box;
   position: absolute;
+}
+
+#resultsDiv,.resultLine,.resultRight,.resultLeft,#start-text,#share-text {
+  position: absolute;
+}
+
+.resultRight {
+  right: 0%;
+}
+
+.resultLeft {
+  left: 0%;
 }
 
 #game,#start,#share {
@@ -312,7 +345,7 @@ body {
   animation: redeal 0.7s;
 }
 
-.card[appear],#start[appear],#share[appear] {
+.card[appear],#start[appear],#resultsDiv[appear] {
   animation: deal 0.4s;
 }
 
